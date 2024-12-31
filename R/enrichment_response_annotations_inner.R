@@ -222,8 +222,8 @@ EnrichmentResponseAnnotationsInner <- R6::R6Class(
     fromJSON = function(input_json) {
       this_object <- jsonlite::fromJSON(input_json)
       if (!is.null(this_object$`Category`)) {
-        if (!is.null(this_object$`Category`) && !(this_object$`Category` %in% c("GeneOntologyMolecularFunction", "GeneOntologyBiologicalProcess", "GeneOntologyCellularComponent", "HumanPheno", "MousePheno", "Domain", "Pathway", "Pubmed", "Interaction", "Cytoband", "TFBS", "GeneFamily", "Coexpression", "CoexpressionAtlas", "ToppCell", "Computational", "Drug", "Disease"))) {
-          stop(paste("Error! \"", this_object$`Category`, "\" cannot be assigned to `Category`. Must be \"GeneOntologyMolecularFunction\", \"GeneOntologyBiologicalProcess\", \"GeneOntologyCellularComponent\", \"HumanPheno\", \"MousePheno\", \"Domain\", \"Pathway\", \"Pubmed\", \"Interaction\", \"Cytoband\", \"TFBS\", \"GeneFamily\", \"Coexpression\", \"CoexpressionAtlas\", \"ToppCell\", \"Computational\", \"Drug\", \"Disease\".", sep = ""))
+        if (!is.null(this_object$`Category`) && !(this_object$`Category` %in% c("GeneOntologyMolecularFunction", "GeneOntologyBiologicalProcess", "GeneOntologyCellularComponent", "HumanPheno", "MousePheno", "Domain", "Pathway", "Pubmed", "Interaction", "Cytoband", "TFBS", "GeneFamily", "Coexpression", "CoexpressionAtlas", "ToppCell", "Computational", "Drug", "Disease", "MicroRNA"))) {
+          stop(paste("Error! \"", this_object$`Category`, "\" cannot be assigned to `Category`. Must be \"GeneOntologyMolecularFunction\", \"GeneOntologyBiologicalProcess\", \"GeneOntologyCellularComponent\", \"HumanPheno\", \"MousePheno\", \"Domain\", \"Pathway\", \"Pubmed\", \"Interaction\", \"Cytoband\", \"TFBS\", \"GeneFamily\", \"Coexpression\", \"CoexpressionAtlas\", \"ToppCell\", \"Computational\", \"Drug\", \"Disease\", \"MicroRNA\".", sep = ""))
         }
         self$`Category` <- this_object$`Category`
       }

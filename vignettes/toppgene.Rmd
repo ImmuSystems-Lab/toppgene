@@ -1,0 +1,184 @@
+---
+title: "Exporatory data analysis by querying the ToppGene Suite"
+shorttitle: "toppgene"
+author:
+  - name: Pariksheet Nanda
+    affiliation: University of Pittsburgh
+    email: pan79@pitt.edu
+package: toppgene
+abstract: >  
+  The ToppGene Suite is a one-stop portal for gene list enrichment analysis and
+  candidate gene prioritization based on functional annotations and protein
+  interactions network.  Although the ToppCluster web application provides
+  convenient graphical access to the ToppGene Suite, the OpenAPI 3.0 compliant
+  interface of ToppGene is better suited for automation.  This package was
+  initial generated from OpenAPI Generator and supplemented with Bioconductor
+  class interfaces and more relevant biological examples.
+bibliography: references.bib
+output:
+  BiocStyle::html_document:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{toppgene}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r knitr-opts}
+#| include = FALSE
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+<!-- markdownlint-disable MD025 -->
+
+# Overview
+
+The `r BiocStyle::Biocpkg("toppgene")` package
+is a client for the ToppGene Suite webserver
+that takes as input one or more gene lists
+to perform enrichment analysis.
+
+To demonstrate the use of ToppGene,
+below are the two test cases from the publication [@chen_improved_2007]
+of congenital heart disease (CHD) and diabetic retinopathy (DR).
+
+# Usage
+
+## Create the OpenAPI instance
+
+```{r toppgene-new}
+library(toppgene)
+
+api_instance <- DefaultApi$new()
+```
+
+## Prepare the gene lists
+
+A query may contain one or more `GeneSet` objects.
+To run a query with multiple `GeneSet` objects,
+assemble them into a `GeneSetCollection`.
+The published example provides gene symbols for CHD (n = 28) DR and (n = 27).
+To use gene identifiers other than gene symbols,
+see the `r BiocStyle::Biocpkg("GSEABase")` package.
+
+ToppGene identifies genes by Entrez IDs.
+You can convert gene symbols into Entrez IDs
+either using Bioconductor or using ToppGene's Lookup feature.
+
+```{r setup}
+gene_id_type <- SymbolIdentifier("org.Hs.eg.db")
+collection_type <- ExpressionSetCollection()
+gs_chd <-
+  GeneSet(c("ADD1", "CITED2", "DTNA", "CKM", "GATA4", "GJA1", "HAND1", "HAND2",
+            "HEY2", "HOXC4", "HOXC5", "ITGB3", "JARID2", "MTHFD1", "MTHFR",
+            "MTRR", "NKX2-5", "NOS3", "NPPA", "NPPB", "RFC1", "SALL4", "TBX1",
+            "TBX5", "TBX20", "TGFB1", "ZFPM2", "ZIC3"),
+          geneIdType = gene_id_type,
+          collectionType = collection_type,
+          setName = "Congenital Heart Disease")
+gs_dr <-
+  GeneSet(c("ACE", "ADRB3", "AGT", "AGTR2", "AKR1B1", "APOE", "AR", "CMA1",
+            "EDN1", "GNB3", "HFE", "HLA-DPB1", "HLA-DRB1", "ICAM1", "ITGA2B",
+            "ITGB2", "LTA", "NOS2A", "NOS3", "NPY", "PECAM1", "PON1", "RAGE",
+            "SELE", "SERPINE1", "TIMP3", "TNF"),
+          geneIdType = gene_id_type,
+          collectionType = collection_type,
+          setName = "Diabetic Retinopathy")
+gsc_sym <- GeneSetCollection(gs_chd, gs_dr)
+gsc_sym
+```
+
+## Convert gene symbol IDs to Entrez IDs
+
+```{r toppgene-convert}
+## Convert to Entrez IDs for ToppGene.
+gsc <- mapIdentifiers(gsc_sym, EntrezIdentifier())
+gsc
+
+## However we lose two of the DR genes during Bioconductor's conversion:
+lengths(geneIds(gsc))
+lengths(geneIds(gsc_sym))
+
+## Try with ToppGene instead.
+var_lookup_request <-
+  LookupRequest$new(Symbols = geneIds(gsc_sym[["Diabetic Retinopathy"]]))
+
+## Result is returned in the same order as the query.
+result <- api_instance$LookupPost(var_lookup_request)
+ids <- purrr::map_int(result$Genes, function(obj) obj$Entrez)
+sym <- purrr::map_chr(result$Genes, function(obj) obj$OfficialSymbol)
+```
+
+If no category is chosen, enrichment is run on all categories.
+
+## Categories
+
+```{r toppgene-category}
+category_types <-
+  c("GeneOntologyMolecularFunction",
+    "GeneOntologyBiologicalProcess",
+    "GeneOntologyCellularComponent",
+    "HumanPheno",
+    "MousePheno",
+    "Domain",
+    "Pathway",
+    "Pubmed",
+    "Interaction",
+    "Cytoband",
+    "TFBS",
+    "GeneFamily",
+    "Coexpression",
+    "CoexpressionAtlas",
+    "ToppGene",
+    "Computational",
+    "MicroRNA",
+    "Drug",
+    "Disease",
+    "MicroRNA")
+```
+
+## Run the query
+
+```{r toppgene-query}
+var_enrichment_request <- EnrichmentRequest$new(Genes = ids)
+
+result <- api_instance$EnrichPost(var_enrichment_request)
+
+length(result$Annotations)
+
+lobstr::obj_size(result$Annotations)
+
+## Returned fields start with uppercase letters.
+names(result$Annotations[[1]])
+stringr::str_subset(names(result$Annotations[[1]]), "^[A-Z]")
+
+purrr::map(result$Annotations[1:2],
+           function(r6) {
+             fields <- stringr::str_subset(names(r6), "^[A-Z]")
+             lst <- setNames(purrr::map(fields,  ~ .subset2(r6, .x)), fields)
+             ## The "Genes" field is always returned as a list.
+           })
+
+## Confirm problem of all Genes being NULL.
+all(purrr::map_lgl(result$Annotations,
+                   function(r6) {
+                     is.null(.subset2(r6, "Genes"))
+                   }))
+```
+
+```{shell toppgene-debug}
+# Works fine, therefore bug with r openapi package.
+curl -H 'Content-Type: text/json' -d '{"Genes":[2]}' https://toppgene.cchmc.org/API/enrich
+```
+
+# Session Info {.unnumbered}
+
+```{r session-info}
+sessionInfo()
+```
+
+# References {.unnumbered}

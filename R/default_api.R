@@ -1,5 +1,7 @@
-#' ToppGene API
-#'
+#' @importFrom R6 R6Class
+#' @importFrom base64enc base64encode
+NULL
+
 #' ToppGene API
 #'
 #' The version of the OpenAPI document: 1.0.0
@@ -14,40 +16,71 @@
 #' @examples
 #' \dontrun{
 #' ####################  EnrichPost  ####################
-#'
 #' library(openapi)
-#' var_enrichment_request <- EnrichmentRequest$new(c(123), c(EnrichmentRequest_Categories_inner$new("GeneOntologyMolecularFunction", 123, 123, 123, 123, "None"))) # EnrichmentRequest | JSON Payload of Entrez genes and which categories needed.
-#' var_pretty <- "pretty_example" # character | Optional. If `true` ToppGene will indent output (Optional)
-#' var_as <- "as_example" # character | Override defaults and/or HTTP request headers for return format. The XML result is not described in this definition file, but it is substantially similar to the JSON format. (Optional)
 #'
-#' #Perform Functional Enrichment
+#' # EnrichmentRequest | JSON Payload of Entrez genes and which categories
+#' # needed.
+#' var_enrichment_request <-
+#'   EnrichmentRequest$new(
+#'     c(123),
+#'     c(EnrichmentRequest_Categories_inner$new(
+#'         "GeneOntologyMolecularFunction",
+#'         123,
+#'         123,
+#'         123,
+#'         123,
+#'         "None")))
+#'
+#' # character | Optional. If `true` ToppGene will indent output (Optional)
+#' var_pretty <- "pretty_example"
+#'
+#' # character | Override defaults and/or HTTP request headers for return
+#' # format. The XML result is not described in this definition file, but it is
+#' # substantially similar to the JSON format. (Optional)
+#' var_as <- "json" # or xml
+#'
+#'  #Perform Functional Enrichment
 #' api_instance <- DefaultApi$new()
 #'
-#' # to save the result into a file, simply add the optional `data_file` parameter, e.g.
-#' # result <- api_instance$EnrichPost(var_enrichment_request, pretty = var_pretty, as = var_asdata_file = "result.txt")
-#' result <- api_instance$EnrichPost(var_enrichment_request, pretty = var_pretty, as = var_as)
-#' dput(result)
+#' # To save the result into a file, simply add the optional `data_file`
+#' # parameter, e.g.
 #'
+#' # result <- api_instance$EnrichPost(var_enrichment_request,
+#' #                                   pretty = var_pretty,
+#' #                                   as = var_as,
+#' #                                   data_file = "result.txt")
+#' result <- api_instance$EnrichPost(var_enrichment_request,
+#'                                   pretty = var_pretty,
+#'                                   as = var_as)
+#' dput(result)
 #'
 #' ####################  LookupPost  ####################
-#'
 #' library(openapi)
-#' var_lookup_request <- LookupRequest$new(c("Symbols_example")) # LookupRequest | 
-#' var_pretty <- "pretty_example" # character | Optional. If `true` ToppGene will indent output (Optional)
-#' var_as <- "as_example" # character | Override defaults and/or HTTP request headers for return format. The XML result is not described in this definition file, but it is substantially similar to the JSON format. (Optional)
 #'
-#' #Convert genes to Human Entrez IDs
+#' var_lookup_request <-
+#'   LookupRequest$new(c("Symbols_example"))
+#' 
+#' # character | Optional.  If `true` ToppGene will indent output (Optional)
+#' var_pretty <- "pretty_example"
+#'
+#' # character | Override defaults and/or HTTP request headers for return
+#' # format. The XML result is not described in this definition file, but it is
+#' # substantially similar to the JSON format. (Optional)
+#' var_as <- "json" # or xml.
+#'
+#' # Convert genes to Human Entrez IDs.
 #' api_instance <- DefaultApi$new()
 #'
-#' # to save the result into a file, simply add the optional `data_file` parameter, e.g.
-#' # result <- api_instance$LookupPost(var_lookup_request, pretty = var_pretty, as = var_asdata_file = "result.txt")
-#' result <- api_instance$LookupPost(var_lookup_request, pretty = var_pretty, as = var_as)
+#' # To save the result into a file, simply add the optional `data_file`
+#' # parameter, e.g.
+#' # result <- api_instance$LookupPost(var_lookup_request,
+#' #                                   pretty = var_pretty,
+#' #                                   as = var_asdata_file = "result.txt")
+#' result <- api_instance$LookupPost(var_lookup_request,
+#'                                   pretty = var_pretty,
+#'                                   as = var_as)
 #' dput(result)
-#'
-#'
 #' }
-#' @importFrom R6 R6Class
-#' @importFrom base64enc base64encode
 #' @export
 DefaultApi <- R6::R6Class(
   "DefaultApi",
@@ -113,9 +146,6 @@ DefaultApi <- R6::R6Class(
         stop("Missing required parameter `enrichment_request`.")
       }
 
-
-
-
       query_params[["pretty"]] <- `pretty`
 
       if (!is.null(`as`) && !(`as` %in% c("json", "xml"))) {
@@ -156,12 +186,10 @@ DefaultApi <- R6::R6Class(
           write(local_var_resp$response, data_file)
         }
 
-        deserialized_resp_obj <- tryCatch(
-          self$api_client$deserialize(local_var_resp$response_as_text(), "EnrichmentResponse", loadNamespace("openapi")),
-          error = function(e) {
-            stop("Failed to deserialize response")
-          }
-        )
+        deserialized_resp_obj <- 
+          self$api_client$deserialize(local_var_resp$response_as_text(),
+                                      "EnrichmentResponse",
+                                      loadNamespace("openapi"))
         local_var_resp$content <- deserialized_resp_obj
         local_var_resp
       } else if (local_var_resp$status_code >= 300 && local_var_resp$status_code <= 399) {
@@ -266,12 +294,10 @@ DefaultApi <- R6::R6Class(
           write(local_var_resp$response, data_file)
         }
 
-        deserialized_resp_obj <- tryCatch(
-          self$api_client$deserialize(local_var_resp$response_as_text(), "LookupResponse", loadNamespace("openapi")),
-          error = function(e) {
-            stop("Failed to deserialize response")
-          }
-        )
+        deserialized_resp_obj <-
+          self$api_client$deserialize(local_var_resp$response_as_text(),
+                                      "LookupResponse",
+                                      loadNamespace("openapi"))
         local_var_resp$content <- deserialized_resp_obj
         local_var_resp
       } else if (local_var_resp$status_code >= 300 && local_var_resp$status_code <= 399) {

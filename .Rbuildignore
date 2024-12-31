@@ -18,3 +18,4 @@
 ^git_push\.sh$
 ^openapi\.Rcheck$
 ^\.\.Rcheck$
+^LICENSE\.md$

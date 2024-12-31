@@ -27,7 +27,7 @@ EnrichmentRequest <- R6::R6Class(
     initialize = function(`Genes` = NULL, `Categories` = NULL, ...) {
       if (!is.null(`Genes`)) {
         stopifnot(is.vector(`Genes`), length(`Genes`) != 0)
-        sapply(`Genes`, function(x) stopifnot(is.character(x)))
+        sapply(`Genes`, function(x) stopifnot(is.integer(x)))
         self$`Genes` <- `Genes`
       }
       if (!is.null(`Categories`)) {
@@ -81,7 +81,7 @@ EnrichmentRequest <- R6::R6Class(
           '"Genes":
              [%s]
           ',
-          paste(unlist(lapply(self$`Genes`, function(x) paste0('"', x, '"'))), collapse = ",")
+          paste(self$`Genes`, collapse = ",")
           )
         },
         if (!is.null(self$`Categories`)) {

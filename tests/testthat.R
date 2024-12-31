@@ -1,4 +1,4 @@
 library(testthat)
-library(openapi)
+library(toppgene)
 
-test_check("openapi")
+test_check("toppgene")
