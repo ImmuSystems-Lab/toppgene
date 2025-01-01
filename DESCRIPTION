@@ -5,49 +5,44 @@ Authors@R: c(
     person("Pariksheet Nanda",
            email = "pan79@pitt.edu",
            role = c("aut", "cre"),
-	   comment = c(ORCID = "0000-0001-9726-4552")),
-    person("OpenAPI Generator community",
-           email = "team@openapitools.org",
-           role = "aut"))
+	   comment = c(ORCID = "0000-0001-9726-4552")))
 Description: The ToppGene Suite is a one-stop portal for gene list enrichment
     analysis and candidate gene prioritization based on functional annotations
     and protein interactions network.  Although the ToppCluster web application
     provides convenient graphical access to the ToppGene Suite, the OpenAPI 3.0
     compliant interface of ToppGene is better suited for automation.  This
-    package was initial generated from OpenAPI Generator and supplemented with
-    Bioconductor class interfaces and more relevant biological examples.
+    package includes Bioconductor class interfaces and biological examples.
 biocViews:
     Clustering,
     GeneExpression,
     GeneSetEnrichment,
     Genetics,
     MotifDiscovery,
+    Network,
     NetworkEnrichment,
     Pathways,
-    PharmacoGenetics,
+    Pharmacogenetics,
     Proteomics,
     Software,
     ThirdPartyClient
 URL: https://github.com/ImmunoSystems-lab/toppgene
 BugReports: https://github.com/ImmunoSystems-lab/toppgene/issues
 Depends: 
-    GSEABase,
     R (>= 4.4.0)
 Encoding: UTF-8
 License: GPL (>= 3)
 LazyData: false
 Imports:
-    base64enc,
     httr,
-    jsonlite,
-    openapi,
-    R6
+    IRanges,
+    purrr,
+    S4Vectors
 Suggests:
     BiocStyle,
     knitr,
     rmarkdown,
-    testthat
+    testthat (>= 3.0.0)
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
-Remotes:
-    zhanghao-njmu/openapi
+Config/testthat/edition: 3
+Config/testthat/parallel: true

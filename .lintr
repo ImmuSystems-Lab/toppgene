@@ -1,7 +1,13 @@
 linters: linters_with_defaults(
-   line_length_linter(160),
-   object_name_linter = NULL,
-   cyclocomp_linter = NULL
- )
+    absolute_path_linter(),
+    assignment_linter(),
+    commented_code_linter = NULL,
+    indentation_linter(4, "never"),
+    line_length_linter(80),
+    spaces_left_parentheses_linter(),
+    trailing_whitespace_linter(),
+    whitespace_linter()
+  )
 exclusions: list(
- )
+  )
+
