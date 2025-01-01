@@ -54,7 +54,7 @@ lookup <- function(symbols) {
             symbols)
     }
     lists <- list_transpose(content(response)[["Genes"]])
-    df <- DataFrame(sapply(lists, unlist, simplify = FALSE))
+    df <- DataFrame(lapply(lists, unlist))
     if (nrow(df) != length(symbols)) {
         warning("Some gene symbols were not found")
     }
@@ -96,11 +96,11 @@ enrich <- function(entrez_ids, categories = NULL) {
     }
     lists <- list_transpose(content(response)[["Annotations"]])
     ## Extract the nested lists from Genes.
-    lists$Genes <- sapply(lists$Genes, purrr::list_transpose, simplify = FALSE)
+    lists$Genes <- lapply(lists$Genes, purrr::list_transpose)
     lists$GenesEntrez <- CharacterList(
-        sapply(lists$Genes, function(x) x$Entrez, simplify = FALSE))
+        lapply(lists$Genes, function(x) x$Entrez))
     lists$GenesSymbol <- CharacterList(
-        sapply(lists$Genes, function(x) x$Symbol, simplify = FALSE))
+        lapply(lists$Genes, function(x) x$Symbol))
     lists$Genes <- NULL
     DataFrame(lists)
 }
@@ -125,5 +125,5 @@ categories <- function() {
         "Pathway",
         "Pubmed",
         "TFBS",
-        "ToppGene")
+        "ToppCell")
 }
