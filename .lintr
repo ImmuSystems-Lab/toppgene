@@ -4,6 +4,7 @@ linters: linters_with_defaults(
     commented_code_linter = NULL,
     indentation_linter(4, "never"),
     line_length_linter(80),
+    object_usage_linter = NULL,
     spaces_left_parentheses_linter(),
     trailing_whitespace_linter(),
     whitespace_linter()

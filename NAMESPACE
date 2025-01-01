@@ -3,6 +3,7 @@
 export(enrich)
 export(lookup)
 importFrom(IRanges,CharacterList)
+importFrom(IRanges,IntegerList)
 importFrom(S4Vectors,DataFrame)
 importFrom(httr,POST)
 importFrom(httr,content)

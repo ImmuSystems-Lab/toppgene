@@ -1,6 +1,6 @@
 Package: toppgene
 Title: Gene List Enrichment Analysis using the ToppGene Suite
-Version: 0.99.0
+Version: 0.98.0
 Authors@R: c(
     person("Pariksheet Nanda",
            email = "pan79@pitt.edu",
@@ -12,6 +12,7 @@ Description: The ToppGene Suite is a one-stop portal for gene list enrichment
     provides convenient graphical access to the ToppGene Suite, the OpenAPI 3.0
     compliant interface of ToppGene is better suited for automation.  This
     package includes Bioconductor class interfaces and biological examples.
+BiocType: Software
 biocViews:
     Clustering,
     GeneExpression,

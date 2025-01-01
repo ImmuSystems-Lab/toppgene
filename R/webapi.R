@@ -1,5 +1,5 @@
 #' @importFrom httr content http_error http_status modify_url parse_url POST
-#' @importFrom IRanges CharacterList
+#' @importFrom IRanges CharacterList IntegerList
 #' @importFrom purrr list_transpose
 #' @importFrom S4Vectors DataFrame
 NULL
@@ -14,12 +14,12 @@ webapi_url <- function(path = NULL) {
 
 #' Return integer Entrez IDs from gene symbols, ensembl references, etc.
 #'
-#' The ToppGene API identifier lookup differs from Bioconductor's identifier
+#' The ToppGene API returns many lookup differs from Bioconductor's identifier
 #' lookup, therefore we have to use the web API instead of the typical
-#' Bioconductor functions of GSEABase::mapIdentfiers, AnnotationDbi::mapIds,
-#' etc.
+#' Bioconductor functions of [GSEABase::mapIdentfiers()],
+#' [AnnotationDbi::mapIds()], etc.
 #'
-#' @param symbols character vector of genes.
+#' @param symbols Character vector of genes.
 #' @return DataFrame with 4 columns: "Submitted" symbol character vector in the
 #'     same order as the symbols input parameter, corresponding "Entrez"
 #'     integer IDs, "OfficialSymbol" character vector, and "Description" of
@@ -63,15 +63,12 @@ lookup <- function(symbols) {
 
 #' Return functional enrichment of gene Entrez IDs.
 #'
-#' The ToppGene API returns many lookup differs from Bioconductor's identifier
-#' lookup, therefore we have to use the web API instead of the typical
-#' Bioconductor functions of GSEABase::mapIdentfiers, AnnotationDbi::mapIds,
-#' etc.
+#' The ToppGene API returns many [categories()] of gene list erichment.
 #'
-#' @param entrez_ids integer vector of genes.
-#' @param categories if no categorie are provided, return all categories.
+#' @param entrez_ids Integer vector of genes.
+#' @param categories If no categories are provided, return all categories.
 #' @return DataFrame with 15 columns containing the enrichment Category, ID,
-#'     and associate data.
+#'     and associated data.
 #' @export
 #' @examples
 #' # Sample functional enrichment calls of the ToppGene API specification:
@@ -97,7 +94,7 @@ enrich <- function(entrez_ids, categories = NULL) {
     lists <- list_transpose(content(response)[["Annotations"]])
     ## Extract the nested lists from Genes.
     lists$Genes <- lapply(lists$Genes, purrr::list_transpose)
-    lists$GenesEntrez <- CharacterList(
+    lists$GenesEntrez <- IntegerList(
         lapply(lists$Genes, function(x) x$Entrez))
     lists$GenesSymbol <- CharacterList(
         lapply(lists$Genes, function(x) x$Symbol))

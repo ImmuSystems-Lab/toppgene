@@ -48,12 +48,6 @@ of congenital heart disease (CHD) and diabetic retinopathy (DR).
 
 # Usage
 
-## Create the OpenAPI instance
-
-```{r toppgene-new}
-library(toppgene)
-```
-
 ## Prepare the gene lists
 
 A query may contain one or more `GeneSet` objects.
@@ -83,6 +77,8 @@ genes_dr_sym <- c(
 ## Convert gene symbol IDs to Entrez IDs
 
 ```{r toppgene-convert}
+library(toppgene)
+
 genes_chd <- lookup(genes_chd_sym)
 genes_chd
 
