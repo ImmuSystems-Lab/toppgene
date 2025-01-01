@@ -7,6 +7,8 @@
 - Replaced `httr` with `httr2`.  The `httr` package home page recommends
   against using it because it has been superseded by `httr2`.
 
+- Updated GitHub workflow with more CRAN and Bioconductor checks.
+
 # toppgene 0.98.0 (2024-01-01)
 
 ## New features
