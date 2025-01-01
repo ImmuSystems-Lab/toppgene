@@ -1,15 +1,12 @@
-#' @importFrom httr content http_error http_status modify_url parse_url POST
+#' @importFrom httr2 req_body_json req_dry_run req_perform req_url_path_append
+#'     request resp_body_json
 #' @importFrom IRanges CharacterList IntegerList
 #' @importFrom purrr list_transpose
 #' @importFrom S4Vectors DataFrame
 NULL
 
-webapi_url <- function(path = NULL) {
-    url <- getOption("TOPPGENE_API_URL", "https://toppgene.cchmc.org/API")
-    if (is.null(path)) {
-        return(url)
-    }
-    modify_url(url, path = c(parse_url(url)$path, path))
+webapi_url <- function() {
+    getOption("TOPPGENE_API_URL", "https://toppgene.cchmc.org/API")
 }
 
 #' Return integer Entrez IDs from gene symbols, ensembl references, etc.
@@ -38,22 +35,22 @@ lookup <- function(symbols) {
         ## Ensure the JSON input is always a list.
         symbols <- list(symbols)
     }
-    response <- POST(
-        webapi_url("lookup"),
-        body = list(Symbols = symbols),
-        encode = "json")
-    if (http_error(response)) {
-        stop(
-            http_status(response)$message,
-            content(response))
-    }
-    content <- content(response)[["Genes"]]
+    response <-
+        webapi_url() |>
+        request() |>
+        req_url_path_append("lookup") |>
+        req_body_json(list(Symbols = symbols)) |>
+        req_perform()
+    content <-
+        response |>
+        resp_body_json() |>
+        (function(x) x[["Genes"]])()
     if (is.null(content)) {
         stop(
             "No results found for ",
             symbols)
     }
-    lists <- list_transpose(content(response)[["Genes"]])
+    lists <- list_transpose(content)
     df <- DataFrame(lapply(lists, unlist))
     if (nrow(df) != length(symbols)) {
         warning("Some gene symbols were not found")
@@ -82,16 +79,17 @@ enrich <- function(entrez_ids, categories = NULL) {
         ## Ensure the JSON input is always a list.
         entrez_ids <- list(entrez_ids)
     }
-    response <- POST(
-        webapi_url("enrich"),
-        body = list(Genes = entrez_ids),
-        encode = "json")
-    if (http_error(response)) {
-        stop(
-            http_status(response)$message,
-            content(response))
-    }
-    lists <- list_transpose(content(response)[["Annotations"]])
+    response <-
+        webapi_url() |>
+        request() |>
+        req_url_path_append("enrich") |>
+        req_body_json(list(Genes = entrez_ids)) |>
+        req_perform()
+    lists <-
+        response |>
+        resp_body_json() |>
+        (function(x) x[["Annotations"]])() |>
+        list_transpose()
     ## Extract the nested lists from Genes.
     lists$Genes <- lapply(lists$Genes, purrr::list_transpose)
     lists$GenesEntrez <- IntegerList(

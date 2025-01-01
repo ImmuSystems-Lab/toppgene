@@ -1,6 +1,6 @@
 Package: toppgene
 Title: Gene List Enrichment Analysis using the ToppGene Suite
-Version: 0.98.0
+Version: 0.98.1
 Authors@R: c(
     person("Pariksheet Nanda",
            email = "pan79@pitt.edu",
@@ -34,7 +34,7 @@ Encoding: UTF-8
 License: GPL (>= 3)
 LazyData: false
 Imports:
-    httr,
+    httr2,
     IRanges,
     purrr,
     S4Vectors

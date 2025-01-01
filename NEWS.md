@@ -1,3 +1,12 @@
+<!-- markdownlint-disable MD024 MD025 -->
+
+# toppgene 0.98.1 (2024-01-01)
+
+## Bug fixes and improvements
+
+- Replaced `httr` with `httr2`.  The `httr` package home page recommends
+  against using it because it has been superseded by `httr2`.
+
 # toppgene 0.98.0 (2024-01-01)
 
 ## New features
@@ -54,7 +63,7 @@
       - JSON accessors are protected by back-quotes to support OpenAPI edge
         cases where the JSON accessors may contain special characters.
 
-      - Error checking is greatly simplifed by `httr::http_error()`, whereas a
+      - Error checking is greatly simplified by `httr::http_error()`, whereas a
         lot of generated code is created to check specific error codes.
 
       - The generated code required a lot of code reformatting to meet

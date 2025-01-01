@@ -1,18 +1,3 @@
-test_that("webapi_url appends paths", {
-    base_url <- webapi_url()
-    expect_equal(
-        tail(parse_url(base_url)$path, 1),
-        "API")
-    suffixes <- "dir1"
-    expect_equal(
-        parse_url(webapi_url(suffixes))$path,
-        paste(c("API", suffixes), collapse = "/"))
-    suffixes <- c("dir1", "dir2")
-    expect_equal(
-        parse_url(webapi_url(suffixes))$path,
-        paste(c("API", suffixes), collapse = "/"))
-})
-
 test_that("lookup supports a single gene", {
     symbol <- "TNF"
     df <- lookup(symbol)
