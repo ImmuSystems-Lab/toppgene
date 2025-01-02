@@ -1,3 +1,7 @@
+## Multiple tests use this object, but creation is slow because it requires a
+## webserver request to create it.
+df_enrich_2 <- enrich(2L)
+
 test_that("lookup supports a single gene", {
     symbol <- "TNF"
     df <- lookup(symbol)
@@ -30,11 +34,11 @@ test_that("enrich is a subset of all possible categories", {
     expect_length(
         setdiff(
             unique(df_enrich_2$Category),
-            categories()),
+            CATEGORIES),
         0L)
     expect_setequal(
         setdiff(
-            categories(),
+            CATEGORIES,
             unique(df_enrich_2$Category)),
         c("HumanPheno", "MousePheno"))
 })

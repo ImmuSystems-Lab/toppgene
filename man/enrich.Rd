@@ -16,7 +16,7 @@ DataFrame with 15 columns containing the enrichment Category, ID,
     and associated data.
 }
 \description{
-The ToppGene API returns many [categories()] of gene list erichment.
+The ToppGene API returns many [CATEGORIES] of gene list erichment.
 }
 \examples{
 # Sample functional enrichment calls of the ToppGene API specification:

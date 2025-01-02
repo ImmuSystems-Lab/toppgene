@@ -60,7 +60,7 @@ lookup <- function(symbols) {
 
 #' Return functional enrichment of gene Entrez IDs.
 #'
-#' The ToppGene API returns many [categories()] of gene list erichment.
+#' The ToppGene API returns many [CATEGORIES] of gene list erichment.
 #'
 #' @param entrez_ids Integer vector of genes.
 #' @param categories If no categories are provided, return all categories.
@@ -98,27 +98,4 @@ enrich <- function(entrez_ids, categories = NULL) {
         lapply(lists$Genes, function(x) x$Symbol))
     lists$Genes <- NULL
     DataFrame(lists)
-}
-
-categories <- function() {
-    c(
-        "Coexpression",
-        "CoexpressionAtlas",
-        "Computational",
-        "Cytoband",
-        "Disease",
-        "Domain",
-        "Drug",
-        "GeneFamily",
-        "GeneOntologyBiologicalProcess",
-        "GeneOntologyCellularComponent",
-        "GeneOntologyMolecularFunction",
-        "HumanPheno",
-        "Interaction",
-        "MicroRNA",
-        "MousePheno",
-        "Pathway",
-        "Pubmed",
-        "TFBS",
-        "ToppCell")
 }
