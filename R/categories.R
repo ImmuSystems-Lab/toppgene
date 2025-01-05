@@ -47,7 +47,46 @@ PROPS_ALLOWED <- list(
     MaxResults = c(min = 1L, max = 5000L),
     Correction = c("None", "FDR", "Bonferroni"))
 
+#' CategoriesDataFrame objects
+#'
+#' @description
+#'
+#' Specialized [DataFrame] class with the following additional constraints to
+#' represent ToppGene parameters to run a ToppGene [enrich()] query:
+#'
+#' \itemize{
+#' \item{Fixed number of rows with fixed order for each category.}
+#' \item{Columns can only be set to the allowed numerical and set values that
+#' are described when showing the object.}
+#' }
+#'
+#' The DataFrame semantics allow quickly setting multiple parameters at a time.
+#' Unlike typical DataFrame behavior, [show()] displays all 19 rows instead of
+#' using ellipses.
+#'
+#' @param x `CategoriesDataFrame` object.
+#' @param i With `j` (x[i, j]]), the row slice(s) / row name(s) , otherwise
+#'   (x[[i]]) the column slice / name.
+#' @param j The column slice / name (x[i, j]).
+#' @param value Atomic or vector assigned to `x`.
+#' @param object `CategoriesDataFrame` object used in [validObject()] and
+#'   [show()] function calls.
+#' @param ... Arguments passed on to inherited methods.
+#' @seealso [DataFrame::DataFrame()]
+#' @keywords classes methods
+#' @aliases CategoriesDataFrame CategoriesDataFrame-class
+#' @rdname CategoriesDataFrame-class
+#' @docType class
 #' @export
+#' @examples
+#' library(DFplyr)
+#' cats <- CategoriesDataFrame()
+#' cats
+#' cats[, "PValue"] <- 0.001
+#' ## Does not work yet.
+#' ##cats |>
+#' ##    mutate(MaxGenes = 10L)
+#' cats
 CategoriesDataFrame <- function(...) {
     df <- DataFrame(
         PValue = rep(PROPS_DEFAULT$PValue, length(CATEGORIES)),
@@ -135,6 +174,7 @@ CategoriesDataFrame <- function(...) {
 
 ## Show all 19 rows instead of taking the head and tail.  Also show allowed
 ## values.
+#' @rdname CategoriesDataFrame-class
 #' @export
 setMethod(
     "show",
@@ -165,7 +205,35 @@ setMethod(
         invisible(NULL)
     })
 
+#' @rdname CategoriesDataFrame-class
 #' @export
 setGeneric("default", function(x) standardGeneric("default"))
+#' @rdname CategoriesDataFrame-class
 #' @export
 setMethod("default", "CategoriesDataFrame", function(x) PROPS_DEFAULT)
+
+#' @aliases [<-,CategoriesDataFrame-method
+#' @rdname CategoriesDataFrame-class
+#' @export
+setMethod(
+    "[<-",
+    "CategoriesDataFrame",
+    function(x, i, j, ..., value) {
+        y <- x
+        y <- callNextMethod(y, i, j, ..., value = value)
+        validObject(y)
+        x <- y
+    })
+
+#' @aliases [[<-,CategoriesDataFrame-method
+#' @rdname CategoriesDataFrame-class
+#' @export
+setMethod(
+    "[[<-",
+    "CategoriesDataFrame",
+    function(x, i, j, ..., value) {
+        y <- x
+        y <- callNextMethod(y, i, j, ..., value = value)
+        validObject(y)
+        x <- y
+    })

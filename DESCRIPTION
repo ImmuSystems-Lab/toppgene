@@ -41,6 +41,7 @@ Imports:
     S4Vectors
 Suggests:
     BiocStyle,
+    DFplyr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
