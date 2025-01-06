@@ -100,72 +100,84 @@ CategoriesDataFrame <- function(...) {
     .CategoriesDataFrame(df)
 }
 
+## The rownames match API Types.
+.validRows <- function(msg, object) {
+    if (nrow(object) != length(CATEGORIES)) {
+        msg <- c(msg, "number of rows must remain the same")
+    } else if (! all(rownames(object) == CATEGORIES)) {
+        msg <- c(msg, "rows names and order must not change")
+    }
+    msg
+}
+
+## Allow the user to add their own columns, but check that the necessary
+## columns are present.
+.validColsPresent <- function(msg, object) {
+    cols <- c(names(default(object)), "Enabled")
+    if (! all(cols %in% colnames(object))) {
+        msg <- c(
+            msg,
+            paste0(
+                "all columns (",
+                paste(cols, sep = ", "),
+                ") must be present"))
+    }
+    msg
+}
+
+## Check column contents.
+.validColsContents <- function(msg, object) {
+    for (i in seq_along(PROPS_ALLOWED)) {
+        col <- names(PROPS_ALLOWED)[i]
+        if (! is.null(names(PROPS_ALLOWED[[i]])) &&
+                all(names(PROPS_ALLOWED[[i]]) == c("min", "max"))) {
+            ## Numeric column limited by min and max.
+            if (! all(object[, col] >= PROPS_ALLOWED[[i]]["min"])) {
+                msg <- c(
+                    msg,
+                    paste(
+                        "column", col,
+                        "must contain values >=",
+                        PROPS_ALLOWED[[i]]["min"]))
+            }
+            if (! all(object[, col] <= PROPS_ALLOWED[[i]]["max"])) {
+                msg <- c(
+                    msg,
+                    paste(
+                        "column", col,
+                        "must contain values <=",
+                        PROPS_ALLOWED[[i]]["max"]))
+            }
+        } else {
+            ## Non-numeric column limited by set.
+            if (! all(object[, col] %in% PROPS_ALLOWED[[i]])) {
+                msg <- c(
+                    msg,
+                    paste0(
+                        "column ", col,
+                        " must contain values in {",
+                        paste(PROPS_ALLOWED[[i]], collapse = ", "),
+                        "}"))
+            }
+        }
+    }
+    if (! is.logical(object@listData$Enabled)) {
+        msg <- c(msg, "column Enabled must only contain logical values")
+    }
+    msg
+}
+
 .validCategoriesDataFrame <- # nolint: cyclocomp_linter
     setValidity(
         "CategoriesDataFrame",
         function(object) {
             ## Accumulate all the errors.
             msg <- NULL
-
-            ## The rownames match API Types.
-            if (nrow(object) != length(CATEGORIES)) {
-                msg <- c(msg, "number of rows must remain the same")
-            } else if (! all(rownames(object) == CATEGORIES)) {
-                msg <- c(msg, "rows names and order must not change")
-            }
-
-            ## Allow the user to add their own columns, but check that the
-            ## necessary columns are present.
-            cols <- c(names(default(object)), "Enabled")
-            if (! all(cols %in% colnames(object))) {
-                msg <- c(
-                    msg,
-                    paste0(
-                        "all columns (",
-                        paste(cols, sep = ", "),
-                        ") must be present"))
-            }
-
-            ## Check column contents.
-            for (i in seq_along(PROPS_ALLOWED)) {
-                col <- names(PROPS_ALLOWED)[i]
-
-                if (! is.null(names(PROPS_ALLOWED[[i]])) &&
-                        all(names(PROPS_ALLOWED[[i]]) == c("min", "max"))) {
-                    ## Numeric column limited by min and max.
-                    if (! all(object[, col] >= PROPS_ALLOWED[[i]]["min"])) {
-                        msg <- c(
-                            msg,
-                            paste(
-                                "column", col,
-                                "must contain values >=",
-                                PROPS_ALLOWED[[i]]["min"]))
-                    }
-                    if (! all(object[, col] <= PROPS_ALLOWED[[i]]["max"])) {
-                        msg <- c(
-                            msg,
-                            paste(
-                                "column", col,
-                                "must contain values <=",
-                                PROPS_ALLOWED[[i]]["max"]))
-                    }
-                } else {
-                    ## Non-numeric column limited by set.
-                    if (! all(object[, col] %in% PROPS_ALLOWED[[i]])) {
-                        msg <- c(
-                            msg,
-                            paste0(
-                                "column ", col,
-                                " must contain values in {",
-                                paste(PROPS_ALLOWED[[i]], collapse = ", "),
-                                "}"))
-                    }
-                }
-            }
-            if (! is.logical(object@listData$Enabled)) {
-                msg <- c(msg, "column Enabled must only contain logical values")
-            }
-
+            msg <-
+                msg |>
+                .validRows(object) |>
+                .validColsPresent(object) |>
+                .validColsContents(object)
             if (! is.null(msg)) {
                 return(msg)
             }
