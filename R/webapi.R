@@ -1,6 +1,7 @@
 #' @importFrom httr2 req_body_json req_dry_run req_perform req_url_path_append
 #'     request resp_body_json
 #' @importFrom IRanges CharacterList IntegerList
+#' @importFrom jsonlite unbox
 #' @importFrom purrr list_transpose
 #' @importFrom S4Vectors DataFrame
 NULL
@@ -71,27 +72,49 @@ lookup <- function(symbols) {
 #' # Sample functional enrichment calls of the ToppGene API specification:
 #' enrich(2L)
 #' enrich(as.integer(c(1482, 4205, 2626, 9421, 9464, 6910, 6722)))
-enrich <- function(entrez_ids, categories = NULL) {
+enrich <- function(entrez_ids, categories = CategoriesDataFrame()) {
     stopifnot(is.integer(entrez_ids))
-    ## The categories option not implemented yet.
-    stopifnot(is.null(categories))
     if (length(entrez_ids) == 1L) {
         ## Ensure the JSON input is always a list.
         entrez_ids <- list(entrez_ids)
+    }
+    req_data <- list(Genes = entrez_ids)
+    if (! is.null(categories)) {
+        stopifnot(is(categories, "CategoriesDataFrame"))
+        ## NB: There is a bug with the API requiring all categories to be
+        ## specified otherwise the web request silently fails and returns NULL.
+        req_data$Categories <-
+            cbind(
+                Type = rownames(categories),
+                as.data.frame(categories)) |>
+            as.list() |>
+            list_transpose() |>
+            ## Prevent inner-most item conversion to a JSON list using unbox(),
+            ## otherwise the web request silently fails and returns NULL.
+            (function(x) {
+                for (type_ in seq_along(x)) {
+                    for (item in seq_along(x[[type_]])) {
+                        x[[type_]][[item]] <- unbox(x[[type_]][[item]])
+                    }
+                }
+                x
+            })()
     }
     response <-
         webapi_url() |>
         request() |>
         req_url_path_append("enrich") |>
-        req_body_json(list(Genes = entrez_ids)) |>
+        req_body_json(req_data) |>
         req_perform()
     lists <-
         response |>
         resp_body_json() |>
-        (function(x) x[["Annotations"]])() |>
-        list_transpose()
+        (function(x) x[["Annotations"]])()
+    ## The server sometimes returns NULL if the request failed.
+    stopifnot(! is.null(lists))
+    lists <- list_transpose(lists)
     ## Extract the nested lists from Genes.
-    lists$Genes <- lapply(lists$Genes, purrr::list_transpose)
+    lists$Genes <- lapply(lists$Genes, list_transpose)
     lists$GenesEntrez <- IntegerList(
         lapply(lists$Genes, function(x) x$Entrez))
     lists$GenesSymbol <- CharacterList(

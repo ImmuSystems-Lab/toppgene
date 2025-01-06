@@ -4,7 +4,7 @@
 \alias{enrich}
 \title{Return functional enrichment of gene Entrez IDs.}
 \usage{
-enrich(entrez_ids, categories = NULL)
+enrich(entrez_ids, categories = CategoriesDataFrame())
 }
 \arguments{
 \item{entrez_ids}{Integer vector of genes.}

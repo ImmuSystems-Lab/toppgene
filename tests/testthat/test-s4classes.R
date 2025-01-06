@@ -3,24 +3,22 @@ test_that("CategoriesDataFrame defaults match API", {
     expect_setequal(
         rownames(cats),
         CATEGORIES)
-    expect_true(
-        all(cats$ENABLED))
     expect_equal(
         default(cats),
         list(
             PValue = 0.05,
-            MinGenes = 2L,
+            MinGenes = 1L,
             MaxGenes = 1500L,
-            MaxResults = 50L,
+            MaxResults = 100L,
             Correction = "FDR"))
     expect_true(
         all(cats$PValue == 0.05))
     expect_true(
-        all(cats$MinGenes == 2L))
+        all(cats$MinGenes == 1L))
     expect_true(
         all(cats$MaxGenes == 1500L))
     expect_true(
-        all(cats$MaxResults == 50L))
+        all(cats$MaxResults == 100L))
     expect_true(
         all(cats$Correction == "FDR"))
 })

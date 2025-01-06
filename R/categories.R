@@ -36,9 +36,9 @@ CATEGORIES <- c(
     "ToppCell")
 PROPS_DEFAULT <- list(
     PValue = 0.05,
-    MinGenes = 2L,
+    MinGenes = 1L,
     MaxGenes = 1500L,
-    MaxResults = 50L,
+    MaxResults = 100L,
     Correction = "FDR")
 PROPS_ALLOWED <- list(
     PValue = c(min = 0, max = 1),
@@ -85,7 +85,6 @@ PROPS_ALLOWED <- list(
 #'     cats |>
 #'     mutate(
 #'         PValue = 0.001,
-#'         Enabled = grepl("Drug|Onto|Pathway|TFBS", rownames(cats)),
 #'         MaxResults = case_when(
 #'             grepl("Onto", rownames(cats)) ~ 25L,
 #'             .default = MaxResults))
@@ -97,7 +96,6 @@ CategoriesDataFrame <- function(...) {
         MaxGenes = PROPS_DEFAULT$MaxGenes,
         MaxResults = PROPS_DEFAULT$MaxResults,
         Correction = PROPS_DEFAULT$Correction,
-        Enabled = TRUE,
         ...)
     rownames(df) <- CATEGORIES
     .CategoriesDataFrame(df)
@@ -116,7 +114,7 @@ CategoriesDataFrame <- function(...) {
 ## Allow the user to add their own columns, but check that the necessary
 ## columns are present.
 .validColsPresent <- function(msg, object) {
-    cols <- c(names(default(object)), "Enabled")
+    cols <- names(default(object))
     if (! all(cols %in% colnames(object))) {
         msg <- c(
             msg,
@@ -164,9 +162,6 @@ CategoriesDataFrame <- function(...) {
             }
         }
     }
-    if (! is.logical(object@listData$Enabled)) {
-        msg <- c(msg, "column Enabled must only contain logical values")
-    }
     msg
 }
 
@@ -197,8 +192,8 @@ setMethod(
     function(object) {
         cat(
             "ToppGene CategoriesDataFrame with ",
-            sum(object@listData$Enabled),
-            " enabled categories\n",
+            nrow(object),
+            " categories\n",
             sep = "")
         print(as.data.frame(object))
         cat(

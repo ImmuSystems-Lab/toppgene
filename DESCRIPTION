@@ -36,6 +36,7 @@ LazyData: false
 Imports:
     httr2,
     IRanges,
+    jsonlite,
     methods,
     purrr,
     S4Vectors
