@@ -89,7 +89,6 @@ test_that("CategoriesDataFrame [<- checks validity", {
 })
 
 test_that("CategoriesDataFrame [[<- checks validity", {
-    skip("Currently broken")
     cats <- CategoriesDataFrame()
     expect_error(cats[["PValue"]] <- -1, "PValue")
     expect_error(cats[["PValue"]] <- 2, "PValue")

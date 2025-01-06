@@ -81,11 +81,14 @@ PROPS_ALLOWED <- list(
 #' @examples
 #' library(DFplyr)
 #' cats <- CategoriesDataFrame()
-#' cats
-#' cats[, "PValue"] <- 0.001
-#' ## Does not work yet.
-#' ##cats |>
-#' ##    mutate(MaxGenes = 10L)
+#' cats <-
+#'     cats |>
+#'     mutate(
+#'         PValue = 0.001,
+#'         Enabled = grepl("Drug|Onto|Pathway|TFBS", rownames(cats)),
+#'         MaxResults = case_when(
+#'             grepl("Onto", rownames(cats)) ~ 25L,
+#'             .default = MaxResults))
 #' cats
 CategoriesDataFrame <- function(...) {
     df <- DataFrame(
@@ -245,7 +248,7 @@ setMethod(
     "CategoriesDataFrame",
     function(x, i, j, ..., value) {
         y <- x
-        y <- callNextMethod(y, i, j, ..., value = value)
+        y@listData[[i]] <- value
         validObject(y)
         x <- y
     })

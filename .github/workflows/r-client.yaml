@@ -38,6 +38,7 @@ jobs:
             any::roxygen2,
             any::xml2,
             bioc::BiocCheck,
+            bioc::DFplyr,
             local::.
           needs: >
             check,
