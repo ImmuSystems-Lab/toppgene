@@ -11,9 +11,9 @@ abstract: >
   candidate gene prioritization based on functional annotations and protein
   interactions network.  Although the ToppCluster web application provides
   convenient graphical access to the ToppGene Suite, the OpenAPI 3.0 compliant
-  interface of ToppGene is better suited for automation.  This package was
-  initial generated from OpenAPI Generator and supplemented with Bioconductor
-  class interfaces and more relevant biological examples.
+  interface of ToppGene is better suited for automation and reproducibility.
+  This package was initial generated from OpenAPI Generator and supplemented
+  with Bioconductor class interfaces and more relevant biological examples.
 bibliography: references.bib
 output:
   BiocStyle::html_document:
@@ -39,7 +39,7 @@ knitr::opts_chunk$set(
 
 The `r BiocStyle::Biocpkg("toppgene")` package
 is a client for the ToppGene Suite webserver
-that takes as input one or more gene lists
+that takes as input a gene list
 to perform enrichment analysis.
 
 To demonstrate the use of ToppGene,
@@ -50,16 +50,14 @@ of congenital heart disease (CHD) and diabetic retinopathy (DR).
 
 ## Prepare the gene lists
 
-A query may contain one or more `GeneSet` objects.
-To run a query with multiple `GeneSet` objects,
-assemble them into a `GeneSetCollection`.
-The published example provides gene symbols for CHD (n = 28) DR and (n = 27).
-To use gene identifiers other than gene symbols,
-see the `r BiocStyle::Biocpkg("GSEABase")` package.
-
-ToppGene identifies genes by Entrez IDs.
-You can convert gene symbols into Entrez IDs
-either using Bioconductor or using ToppGene's Lookup feature.
+A query may contain one or more genes.
+ToppGene `enrich()` requires gene Entrez ID integers.
+However, symbol conversion with ToppGene
+is more permissive than Bioconductor,
+therefore use ToppGene's `lookup()` function
+to convert gene symbols to Entrez IDs.
+The published example provides gene symbols for CHD (n = 28) DR and (n = 27)
+that we will also use here.
 
 ```{r setup}
 genes_chd_sym <- c(
@@ -76,21 +74,87 @@ genes_dr_sym <- c(
 
 ## Convert gene symbol IDs to Entrez IDs
 
-```{r toppgene-convert}
+```{r toppgene-lookup}
 library(toppgene)
 
 genes_chd <- lookup(genes_chd_sym)
 genes_chd
-
 genes_dr <- lookup(genes_dr_sym)
 genes_dr
 ```
 
-## Run enrichment query
+## Run enrichment queries
 
-```{r toppgene-query}
+```{r toppgene-enrich}
 enrich_chd <- enrich(genes_chd$Entrez)
 enrich_chd
+enrich_dr <- enrich(genes_dr$Entrez)
+enrich_dr
+```
+
+## View enrichment of publication top-ranked gene
+
+```{r toppgene-compare}
+library(IRanges) # CharacterList
+library(DFplyr)  # (DataFrame support for various dplyr functions)
+## Show all DataFrame rows of top_results().
+orig <- options(showHeadLines = 20L)
+
+top_results <- function(df) {
+    df |>
+        group_by(Category) |>
+        slice(1) |>
+        ungroup() |>
+        ## Shorten GeneOntology to GO.
+        mutate(Category = gsub(x = Category, "GeneOntology", "GO")) |>
+        select(Category, ID, Name, GenesSymbol)
+}
+enrich_chd |>
+    filter(any(GenesSymbol %in% CharacterList("HAND2"))) |>
+    top_results()
+enrich_dr |>
+    filter(any(GenesSymbol %in% CharacterList("HLA-DPB1"))) |>
+    top_results()
+
+options(showHeadLines = orig)
+```
+
+## Change default limits of enrichment queries
+
+One can change the various cut-offs of a query using the
+`CategoriesDataFrame()` to limit or expand the number of results.
+
+```{r toppgene-modify-defaults}
+## Default cut-offs.
+cats <- CategoriesDataFrame()
+cats
+
+## Limit to 10 results for each category, and lower PValue for GeneOntology.
+cats <-
+    cats |>
+    mutate(
+        PValue = case_when(
+            grepl("GeneOntology", rownames(cats)) ~ 1e-7,
+            .default = PValue),
+        MaxResults = 10L)
+cats
+
+enrich_chd_mod <-
+    enrich(
+        genes_chd$Entrez,
+        cats)
+enrich_chd_mod
+
+## MaxResults limited to at most 10.
+enrich_chd_mod |>
+    count(Category)
+
+## PValue limited to below 1e-7.
+enrich_chd_mod |>
+    arrange(desc(PValue)) |>
+    filter(grepl(x = Category, "Onto")) |>
+    group_by(Category) |>
+    slice(1)
 ```
 
 # Session Info {.unnumbered}

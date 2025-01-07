@@ -1,6 +1,44 @@
 <!-- markdownlint-disable MD024 MD025 -->
 
-# toppgene 0.98.1 (2024-01-01)
+# toppgene 0.98.1 (2024-01-06)
+
+## New features
+
+- `enrich()` can now be called with any combination of functional enrichment
+  categories.  Category thresholds can also be fully adjusted instead of being
+  fixed at their default values.  These modifications are passed to `enrich()`
+  using a `CategoriesDataFrame` object
+
+## Significant user-visible changes
+
+- Added `CategoryDataFrame()` S4 class to customize `enrich(..., categories)`
+  queries.  Below are the default values and allowed value ranges or choices:
+
+   - PValue: 0.05 (min: 0, max: 1)
+   - MinGenes: 1 (min: 1, max: 5000)
+   - MaxGenes: 1500 (min: 2, max: 5000)
+   - MaxResults: 100 (min: 1, max: 5000)
+   - Correction: FDR (choices: {None, FDR, Bonferroni})
+   - Type: * (choices: any combination from the following list)
+      - Coexpression
+      - CoexpressionAtlas
+      - Computational
+      - Cytoband
+      - Disease
+      - Domain
+      - Drug
+      - GeneFamily
+      - GeneOntologyBiologicalProcess
+      - GeneOntologyCellularComponent
+      - GeneOntologyMolecularFunction
+      - HumanPheno
+      - Interaction
+      - MicroRNA
+      - MousePheno
+      - Pathway
+      - Pubmed
+      - TFBS
+      - ToppCell
 
 ## Bug fixes and improvements
 
@@ -8,6 +46,10 @@
   against using it because it has been superseded by `httr2`.
 
 - Updated GitHub workflow with more CRAN and Bioconductor checks.
+
+- Sped up unit testing by splitting tests creating web API queries
+  into separate unit test files, because testthat parallelization is
+  split by `./tests/testthat/test-*.R` file.
 
 # toppgene 0.98.0 (2024-01-01)
 
