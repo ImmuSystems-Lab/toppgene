@@ -1,3 +1,8 @@
+test_that("CategoriesDataFrame show method works", {
+    cats <- CategoriesDataFrame()
+    expect_output(show(cats), "allowed by ToppGene")
+})
+
 test_that("CategoriesDataFrame defaults match API", {
     cats <- CategoriesDataFrame()
     expect_setequal(
@@ -84,6 +89,14 @@ test_that("CategoriesDataFrame [<- checks validity", {
             cats <- CategoriesDataFrame()
         }
     }
+    ## Row validity.
+    expect_error(rownames(cats) <- rev(rownames(cats)), "order")
+    expect_true(all(rownames(cats) == CATEGORIES))
+    expect_silent(rownames(cats) <- rownames(cats))
+    expect_error(subset(cats, "Onto" %in% CATEGORIES), "number")
+    expect_silent(subset(cats, rownames(cats) %in% CATEGORIES))
+    ## Numer of columns.
+    expect_error(subset(cats, select = names(default(cats))[-1]), "present")
 })
 
 test_that("CategoriesDataFrame [[<- checks validity", {

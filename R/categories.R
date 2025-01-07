@@ -130,35 +130,37 @@ CategoriesDataFrame <- function(...) {
 .validColsContents <- function(msg, object) {
     for (i in seq_along(PROPS_ALLOWED)) {
         col <- names(PROPS_ALLOWED)[i]
-        if (! is.null(names(PROPS_ALLOWED[[i]])) &&
-                all(names(PROPS_ALLOWED[[i]]) == c("min", "max"))) {
-            ## Numeric column limited by min and max.
-            if (! all(object[, col] >= PROPS_ALLOWED[[i]]["min"])) {
-                msg <- c(
-                    msg,
-                    paste(
-                        "column", col,
-                        "must contain values >=",
-                        PROPS_ALLOWED[[i]]["min"]))
-            }
-            if (! all(object[, col] <= PROPS_ALLOWED[[i]]["max"])) {
-                msg <- c(
-                    msg,
-                    paste(
-                        "column", col,
-                        "must contain values <=",
-                        PROPS_ALLOWED[[i]]["max"]))
-            }
-        } else {
-            ## Non-numeric column limited by set.
-            if (! all(object[, col] %in% PROPS_ALLOWED[[i]])) {
-                msg <- c(
-                    msg,
-                    paste0(
-                        "column ", col,
-                        " must contain values in {",
-                        paste(PROPS_ALLOWED[[i]], collapse = ", "),
-                        "}"))
+        if (col %in% colnames(object)) {
+            if (! is.null(names(PROPS_ALLOWED[[i]])) &&
+                    all(names(PROPS_ALLOWED[[i]]) == c("min", "max"))) {
+                ## Numeric column limited by min and max.
+                if (! all(object[, col] >= PROPS_ALLOWED[[i]]["min"])) {
+                    msg <- c(
+                        msg,
+                        paste(
+                            "column", col,
+                            "must contain values >=",
+                            PROPS_ALLOWED[[i]]["min"]))
+                }
+                if (! all(object[, col] <= PROPS_ALLOWED[[i]]["max"])) {
+                    msg <- c(
+                        msg,
+                        paste(
+                            "column", col,
+                            "must contain values <=",
+                            PROPS_ALLOWED[[i]]["max"]))
+                }
+            } else {
+                ## Non-numeric column limited by set.
+                if (! all(object[, col] %in% PROPS_ALLOWED[[i]])) {
+                    msg <- c(
+                        msg,
+                        paste0(
+                            "column ", col,
+                            " must contain values in {",
+                            paste(PROPS_ALLOWED[[i]], collapse = ", "),
+                            "}"))
+                }
             }
         }
     }
@@ -244,6 +246,32 @@ setMethod(
     function(x, i, j, ..., value) {
         y <- x
         y@listData[[i]] <- value
+        validObject(y)
+        x <- y
+    })
+
+#' @aliases rownames<-,CategoriesDataFrame-method
+#' @rdname CategoriesDataFrame-class
+#' @export
+setMethod(
+    "rownames<-",
+    "CategoriesDataFrame",
+    function(x, value) {
+        y <- x
+        y <- callNextMethod(y, value)
+        validObject(y)
+        x
+    })
+
+#' @aliases subset,CategoriesDataFrame-method
+#' @rdname CategoriesDataFrame-class
+#' @export
+setMethod(
+    "subset",
+    "CategoriesDataFrame",
+    function(x, ...) {
+        y <- x
+        y <- callNextMethod(y, ...)
         validObject(y)
         x <- y
     })
