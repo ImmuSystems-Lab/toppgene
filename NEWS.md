@@ -1,5 +1,24 @@
 <!-- markdownlint-disable MD024 MD025 -->
 
+# toppsuite 0.98.2 (????-??-??)
+
+## New features
+
+- New function `cluster()` reproducibly runs ToppCluster genesets queries.
+
+## Significant user-visible changes
+
+- Renamed package from toppgene to toppsuite, because it now includes both
+  ToppGene and ToppCluster.
+
+- Implemented ToppCluster using the POST web interface
+
+- Added accompanying sample data to run `cluster()`.
+
+## Bug fixes and improvements
+
+- Increased unit test coverage from 80.28% to 100.00%.
+
 # toppgene 0.98.1 (2024-01-06)
 
 ## New features

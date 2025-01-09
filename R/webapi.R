@@ -1,5 +1,5 @@
-#' @importFrom httr2 req_body_json req_dry_run req_perform req_url_path_append
-#'     request resp_body_json
+#' @importFrom httr2 req_body_json req_perform req_url_path_append request
+#'     resp_body_json
 #' @importFrom IRanges CharacterList IntegerList
 #' @importFrom jsonlite unbox
 #' @importFrom purrr list_transpose

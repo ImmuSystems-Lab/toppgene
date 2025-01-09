@@ -1,5 +1,8 @@
-The toppgene R/Bioconductor package provides a client interface to the ToppGene
-API for gene list enrichment analysis <https://toppgene.cchmc.org/API>.
+The toppsuite R Bioconductor package provides a client interface to the Topp
+Suite for gene list enrichment analysis:
+
+- <https://toppgene.cchmc.org/API> for a single set gene list.
+- <https://toppcluster.cchmc.org> for multiple gene lists.
 
 # Installation for development
 

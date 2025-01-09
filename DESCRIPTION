@@ -1,12 +1,12 @@
-Package: toppgene
-Title: Gene List Enrichment Analysis using the ToppGene Suite
-Version: 0.98.1
+Package: toppsuite
+Title: Gene List Enrichment Analysis using the Topp Suite
+Version: 0.98.2
 Authors@R: c(
     person("Pariksheet Nanda",
            email = "pan79@pitt.edu",
            role = c("aut", "cre"),
 	   comment = c(ORCID = "0000-0001-9726-4552")))
-Description: The ToppGene Suite is a one-stop portal for gene list enrichment
+Description: The Topp Suite is a one-stop portal for gene list enrichment
     analysis and candidate gene prioritization based on functional annotations
     and protein interactions network.  Although the ToppCluster web application
     provides convenient graphical access to the ToppGene Suite, the OpenAPI 3.0
@@ -29,7 +29,7 @@ biocViews:
     ThirdPartyClient
 URL: https://github.com/ImmunoSystems-lab/toppgene
 BugReports: https://github.com/ImmunoSystems-lab/toppgene/issues
-Depends: 
+Depends:
     R (>= 4.4.0)
 Encoding: UTF-8
 License: GPL (>= 3)
@@ -40,7 +40,8 @@ Imports:
     jsonlite,
     methods,
     purrr,
-    S4Vectors
+    S4Vectors,
+    xml2
 Suggests:
     BiocStyle,
     DFplyr,
