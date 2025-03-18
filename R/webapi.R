@@ -10,6 +10,14 @@ webapi_url <- function() {
     getOption("TOPPGENE_API_URL", "https://toppgene.cchmc.org/API")
 }
 
+EmptyLookupDF <- function() {
+    DataFrame(
+        OfficialSymbol = character(),
+        Entrez = integer(),
+        Submitted = character(),
+        Description = character())
+}
+
 #' Return integer Entrez IDs from gene symbols, ensembl references, etc.
 #'
 #' The ToppGene API returns many lookup differs from Bioconductor's identifier
@@ -47,9 +55,8 @@ lookup <- function(symbols) {
         resp_body_json() |>
         (function(x) x[["Genes"]])()
     if (is.null(content)) {
-        stop(
-            "No results found for ",
-            symbols)
+        warning("No matching gene symbols found")
+        return(EmptyLookupDF())
     }
     lists <- list_transpose(content)
     df <- DataFrame(lapply(lists, unlist))
@@ -57,6 +64,25 @@ lookup <- function(symbols) {
         warning("Some gene symbols were not found")
     }
     df
+}
+
+EmptyEnrichDF <- function() {
+    DataFrame(
+        Category = character(),
+        ID = character(),
+        Name = character(),
+        PValue = double(),
+        QValueFDRBH = double(),
+        QValueFDRBY = double(),
+        QValueBonferroni = double(),
+        TotalGenes = integer(),
+        GenesInTerm = integer(),
+        GenesInQuery = integer(),
+        GenesInTermInQuery = integer(),
+        Source = character(),
+        URL = character(),
+        GenesEntrez = IntegerList(),
+        GenesSymbol = CharacterList())
 }
 
 #' Return functional enrichment of gene Entrez IDs.
@@ -111,7 +137,10 @@ enrich <- function(entrez_ids, categories = CategoriesDataFrame()) {
         resp_body_json() |>
         (function(x) x[["Annotations"]])()
     ## The server sometimes returns NULL if the request failed.
-    stopifnot(! is.null(lists))
+    if (is.null(lists)) {
+        warning("No results for this query; try relaxing categories PValue")
+        return(EmptyEnrichDF())
+    }
     lists <- list_transpose(lists)
     ## Extract the nested lists from Genes.
     lists$Genes <- lapply(lists$Genes, list_transpose)

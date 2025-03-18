@@ -50,3 +50,17 @@ test_that("enrich supports modifying category defaults", {
     expect_true(
         all(df_enrich_2_cats$PValue < cats_pvalue))
 })
+
+test_that("enrich returns warning on empty results", {
+    cats_pvalue_empty <- 1e-30
+    cats_empty <- CategoriesDataFrame()
+    cats_empty[, "PValue"] <- cats_pvalue_empty
+    expect_warning(
+        df_enrich_2_empty <- enrich(2L, categories = cats_empty),
+        "No results for this query")
+    expect_equal(nrow(df_enrich_2_empty), 0)
+    expect_equal(df_enrich_2_empty, EmptyEnrichDF())
+    expect_equal(
+        sapply(df_enrich_2_empty, class),
+        sapply(df_enrich_2_null, class))
+})

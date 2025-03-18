@@ -1,6 +1,22 @@
 <!-- markdownlint-disable MD024 MD025 -->
 
-# toppgene 0.98.1 (2024-01-06)
+# toppgene 0.99.0 (2025-03-18)
+
+## Significant user-visible changes
+
+- `lookup()` and `enrich()` now return warnings on encountering empty results
+  instead of throwing errors.  This is more reasonable, because `enrich()` can
+  return no results if the default PValue or the requested PValue are too
+  stringent.  Similarly, `lookup()` may yield no results for some queries and
+  having an empty `DataFrame` makes it easier to bind results rows of multiple
+  queries.
+
+## Bug fixes and improvements
+
+- The year of two January releases in the NEWS.md file was incorrectly set to
+  2024 instead of 2025.
+
+# toppgene 0.98.1 (2025-01-06)
 
 ## New features
 
@@ -51,7 +67,7 @@
   into separate unit test files, because testthat parallelization is
   split by `./tests/testthat/test-*.R` file.
 
-# toppgene 0.98.0 (2024-01-01)
+# toppgene 0.98.0 (2025-01-01)
 
 ## New features
 
