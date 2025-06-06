@@ -1,4 +1,4 @@
-#' @importFrom httr2 req_body_json req_dry_run req_perform req_url_path_append
+#' @importFrom httr2 req_body_json req_perform req_url_path_append
 #'     request resp_body_json
 #' @importFrom IRanges CharacterList IntegerList
 #' @importFrom jsonlite unbox
@@ -6,11 +6,11 @@
 #' @importFrom S4Vectors DataFrame
 NULL
 
-webapi_url <- function() {
+url_toppgene <- function() {
     getOption("TOPPGENE_API_URL", "https://toppgene.cchmc.org/API")
 }
 
-EmptyLookupDF <- function() {
+EmptyLookupDFEntrez <- function() {
     DataFrame(
         OfficialSymbol = character(),
         Entrez = integer(),
@@ -45,7 +45,7 @@ lookup <- function(symbols) {
         symbols <- list(symbols)
     }
     response <-
-        webapi_url() |>
+        url_toppgene() |>
         request() |>
         req_url_path_append("lookup") |>
         req_body_json(list(Symbols = symbols)) |>
@@ -56,7 +56,7 @@ lookup <- function(symbols) {
         (function(x) x[["Genes"]])()
     if (is.null(content)) {
         warning("No matching gene symbols found")
-        return(EmptyLookupDF())
+        return(EmptyLookupDFEntrez())
     }
     lists <- list_transpose(content)
     df <- DataFrame(lapply(lists, unlist))
@@ -127,7 +127,7 @@ enrich <- function(entrez_ids, categories = CategoriesDataFrame()) {
             })()
     }
     response <-
-        webapi_url() |>
+        url_toppgene() |>
         request() |>
         req_url_path_append("enrich") |>
         req_body_json(req_data) |>

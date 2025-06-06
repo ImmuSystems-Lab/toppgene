@@ -1,6 +1,6 @@
 Package: toppgene
 Title: Gene List Enrichment Analysis using the ToppGene Suite
-Version: 0.99.0
+Version: 0.98.3
 Authors@R: c(
     person("Pariksheet Nanda",
            email = "pan79@pitt.edu",
@@ -30,7 +30,7 @@ biocViews:
 URL: https://github.com/ImmunoSystems-lab/toppgene
 BugReports: https://github.com/ImmunoSystems-lab/toppgene/issues
 Depends: 
-    R (>= 4.4.0)
+    R (>= 4.5.0)
 Encoding: UTF-8
 License: GPL (>= 3)
 LazyData: false
@@ -40,7 +40,9 @@ Imports:
     jsonlite,
     methods,
     purrr,
-    S4Vectors
+    readr,
+    S4Vectors,
+    xml2
 Suggests:
     BiocStyle,
     DFplyr,

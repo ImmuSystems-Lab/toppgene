@@ -1,6 +1,23 @@
 <!-- markdownlint-disable MD024 MD025 -->
 
-# toppgene 0.99.0 (2025-03-18)
+# toppgene 0.98.3 (XXXX-XX-XX)
+
+## New features
+
+- Added `lookup_pubchem()` function to standardize various drug database
+  identifiers to PubChem CIDs.  Queries from `lookup_pubchem()` are performed
+  using PubChem's Power User Gatway (PUG) API.  While similar lookup
+  functionality exists in other Bioconductor packages, the available packages
+  have limitations making them unsuitable with the newness and scale of the
+  ToppGene API:
+
+   - Even new versions of `metaboliteIDmapping` having missing identifiers even
+     for older entries when converting to PubChem CIDs.
+
+   - `ChemmineR` does not support vectorized lookups to PubChem CIDs and times
+     out when performing multiple queries.
+
+# toppgene 0.98.2 (2025-03-18)
 
 ## Significant user-visible changes
 

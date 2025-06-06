@@ -9,3 +9,24 @@ options(repos = BiocManager::repositories())
 remotes::install_deps(dependencies = TRUE)
 devtools::load_all()
 ```
+
+# Unit tests
+
+```R
+devtools::test()
+```
+
+# Unit test coverage
+
+```R
+install.packages("covr")
+cvg <- covr::package_coverage()
+cvg
+covr::report(cvg)
+```
+
+# Packages checks
+
+```R
+devtools::check()
+```
