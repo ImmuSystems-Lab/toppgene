@@ -221,11 +221,11 @@ lookup_pubchem <- function(df) {
     if (nrow(df) == 0L) {
         return(EmptyLookupDFPubChem())
     }
-    if (sum(df$Category == "Drug") != 0L) {
-        df_drug <- subset(df, df$Category == "Drug")
-    } else {
+    if (all(df$Category == "Drug")) {
         ## Edge case for subset() with only Drug Category entries.
         df_drug <- df
+    } else {
+        df_drug <- subset(df, df$Category == "Drug")
     }
     if (nrow(df_drug) == 0L) {
         return(EmptyLookupDFPubChem())
