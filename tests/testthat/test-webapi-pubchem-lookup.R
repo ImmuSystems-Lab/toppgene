@@ -19,6 +19,20 @@ test_that("lookup_pubchem returns empty result DataFrame for non-Drug input", {
         EmptyLookupDFPubChem())
 })
 
+test_that("lookup_pubchem subsets DataFrame with only Drug Category", {
+    df <- DataFrame(
+        Category = "Drug",
+        Source = "Stitch",
+        ID = "CID000002244",
+        Name = "aspirin")
+    expect_equal(
+        lookup_pubchem(df),
+        DataFrame(
+            Source = "Stitch",
+            ID = "CID000002244",
+            CID = "2244"))
+})
+
 test_that("lookup_pubchem handles multiple drug databases", {
     ## Limit enrich() results to Drug category and increase hits to 1000.
     cats <- CategoriesDataFrame()
