@@ -31,4 +31,6 @@ covr::report(cvg)
 devtools::check()
 install.packages("BiocManager")
 BiocCheck::BiocCheck()
+install.packages("lintr")
+lintr::lint_package()
 ```

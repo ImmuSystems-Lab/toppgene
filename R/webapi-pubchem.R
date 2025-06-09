@@ -9,14 +9,17 @@
 NULL
 
 url_pubchem <- function() {
-    getOption("PUBCHEM_API_URL", "https://pubchem.ncbi.nlm.nih.gov/pug/pug.cgi")
+    getOption(
+        "PUBCHEM_API_URL",
+        "https://pubchem.ncbi.nlm.nih.gov/pug/pug.cgi")
 }
 
 req_pubchem <- function(xml_document) {
     xml <-
-        xml_dtd("PCT-Data",
-                "-//NCBI//NCBI PCTools/EN",
-                "NCBI_PCTools.dtd") |>
+        xml_dtd(
+            "PCT-Data",
+            "-//NCBI//NCBI PCTools/EN",
+            "NCBI_PCTools.dtd") |>
         xml_new_root() |>
         xml_add_child(xml_document)
     request(url_pubchem()) |>
@@ -26,7 +29,7 @@ req_pubchem <- function(xml_document) {
 
 xml_pubchem_query <- function(ids, registry = NULL) {
     if (! is.null(registry) && registry == "SYNONYM") {
-        registry <- NULL;
+        registry <- NULL
     }
     if (! is.null(registry)) {
         stopifnot(is.character(registry))
@@ -39,10 +42,7 @@ xml_pubchem_query <- function(ids, registry = NULL) {
             "PCT-QueryUids" = list(
                 "PCT-QueryUids_synonyms" =
                     setNames(
-                        lapply(
-                            ids,
-                            function(x)
-                                list(x)),
+                        lapply(ids, function(x) list(x)),
                         rep("PCT-QueryUids_synonyms_E",
                             length(ids)))))
     } else {
@@ -54,13 +54,22 @@ xml_pubchem_query <- function(ids, registry = NULL) {
                             registry),
                         "PCT-RegistryIDs_source-ids" =
                             setNames(
-                                lapply(
-                                    ids,
-                                    function(x)
-                                        list(x)),
+                                lapply(ids, function(x) list(x)),
                                 rep("PCT-RegistryIDs_source-ids_E",
                                     length(ids)))))))
     }
+    id_exchange <- list(
+        "PCT-QueryIDExchange" = list(
+            "PCT-QueryIDExchange_input" = input,
+            "PCT-QueryIDExchange_operation-type" =
+                structure(list(), value = "same"),
+            "PCT-QueryIDExchange_output-type" =
+                structure(list(), value = "cid"),
+            "PCT-QueryIDExchange_output-method" =
+                structure(list(), value = "file-pair"),
+            "PCT-QueryIDExchange_compression" =
+                structure(list(), value = "gzip")
+        ))
     as_xml_document(list(
         "PCT-Data" = list(
             "PCT-Data_input" = list(
@@ -69,18 +78,8 @@ xml_pubchem_query <- function(ids, registry = NULL) {
                         "PCT-Query" = list(
                             "PCT-Query_type" = list(
                                 "PCT-QueryType" = list(
-                                    "PCT-QueryType_id-exchange" = list(
-                                        "PCT-QueryIDExchange" = list(
-                                            "PCT-QueryIDExchange_input" = input,
-                                            "PCT-QueryIDExchange_operation-type" =
-                                                structure(list(), value = "same"),
-                                        "PCT-QueryIDExchange_output-type" =
-                                            structure(list(), value = "cid"),
-                                        "PCT-QueryIDExchange_output-method" =
-                                            structure(list(), value = "file-pair"),
-                                        "PCT-QueryIDExchange_compression" =
-                                            structure(list(), value = "gzip")
-                                    )))))))))))
+                                    "PCT-QueryType_id-exchange" =
+                                        id_exchange)))))))))
 }
 
 xml_pubchem_status <- function(reqid) {
@@ -284,20 +283,22 @@ lookup_pubchem <- function(df) {
     }
     lists_req <-
         lists_req |>
-        (\(x)
+        (function(x) {
             list(
-                ids = lapply(unname(x), \(x) x$ID),
+                ids = lapply(unname(x), function(x) x$ID),
                 registry =
                     names(x) |>
-                    lapply(\(x) x)))() |>
+                    lapply(\(x) x))
+        })() |>
         list_transpose()
     ## Queue parallel network queries to minimize time waiting for responses.
-    resps <-        
+    resps <-
         lapply(
             lists_req,
-            function(x)
+            function(x) {
                 req_pubchem_query(x$ids, x$registry) |>
-                req_throttle(capacity = 30)) |>
+                    req_throttle(capacity = 30)
+            }) |>
         req_perform_parallel(progress = FALSE)
     ## Retrieve request IDs.
     reqids <- lapply(resps, parse_pubchem_query)

@@ -55,8 +55,7 @@ test_that("lookup_pubchem handles multiple drug databases", {
     ## Broad Institute identifiers and falling back to synonym names introduces
     ## more than 1 hit.
     expect_true(all(
-        table(df_enrich$Source)[1:2] <=
-        table(df_cid$Source)[1:2]))
+        table(df_enrich$Source)[1:2] <= table(df_cid$Source)[1:2]))
     ## Without Broad Institute hits, there is a 1:1 mapping.
     expect_equal(
         table(df_enrich$Source)[-c(1:2)],
