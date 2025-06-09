@@ -29,4 +29,6 @@ covr::report(cvg)
 
 ```R
 devtools::check()
+install.packages("BiocManager")
+BiocCheck::BiocCheck()
 ```

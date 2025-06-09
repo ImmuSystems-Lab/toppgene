@@ -5,7 +5,11 @@ Authors@R: c(
     person("Pariksheet Nanda",
            email = "pan79@pitt.edu",
            role = c("aut", "cre"),
-	   comment = c(ORCID = "0000-0001-9726-4552")))
+	   comment = c(ORCID = "0000-0001-9726-4552")),
+    person("Jason Shoemaker",
+           email = "jason.shoemaker@pitt.edu",
+	   role = "fnd",
+	   comment = c(ORCID = "0000-0003-3315-7103")))
 Description: The ToppGene Suite is a one-stop portal for gene list enrichment
     analysis and candidate gene prioritization based on functional annotations
     and protein interactions network.  Although the ToppCluster web application

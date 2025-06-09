@@ -2,7 +2,7 @@
 #'     req_retry req_throttle req_url_path_append request resp_body_xml
 #' @importFrom purrr list_transpose
 #' @importFrom readr read_tsv
-#' @importFrom S4Vectors DataFrame elementNROWS endoapply List merge
+#' @importFrom S4Vectors DataFrame endoapply List merge
 #' @importFrom stats setNames
 #' @importFrom xml2 as_xml_document xml_add_child xml_attr xml_dtd
 #'     xml_find_first xml_new_root xml_text
@@ -39,9 +39,10 @@ xml_pubchem_query <- function(ids, registry = NULL) {
             "PCT-QueryUids" = list(
                 "PCT-QueryUids_synonyms" =
                     setNames(
-                        lapply(ids,
-                               function(x)
-                                   list(x)),
+                        lapply(
+                            ids,
+                            function(x)
+                                list(x)),
                         rep("PCT-QueryUids_synonyms_E",
                             length(ids)))))
     } else {
@@ -53,9 +54,10 @@ xml_pubchem_query <- function(ids, registry = NULL) {
                             registry),
                         "PCT-RegistryIDs_source-ids" =
                             setNames(
-                                lapply(ids,
-                                       function(x)
-                                           list(x)),
+                                lapply(
+                                    ids,
+                                    function(x)
+                                        list(x)),
                                 rep("PCT-RegistryIDs_source-ids_E",
                                     length(ids)))))))
     }
@@ -104,22 +106,24 @@ SOURCES_DRUG <- c(
     "Stitch")
 
 ## PubChem RegistryIDs corresponding to the above ToppGene Drug Source IDs.
-SOURCES_REGISTRY <- function(source) {
-    switch(source,
-           "Broad Institute CMAP Down" = NULL, # synonym instead of registry.
-           "Broad Institute CMAP Up" = NULL,   # synonym instead of registry.
-           "CTD" = "Comparative Toxicogenomics Database",
-           "Drug Bank" = "DrugBank",
-           "Stitch" = NA, # Stitch IDs already are CIDs.
-           "NOT-FOUND")   # Default.
+SOURCES_REGISTRY <- function(source, synonym = NULL) {
+    switch(
+        source,
+        "Broad Institute CMAP Down" = synonym, # synonym instead of registry.
+        "Broad Institute CMAP Up" = synonym,   # synonym instead of registry.
+        "CTD" = "Comparative Toxicogenomics Database",
+        "Drug Bank" = "DrugBank",
+        "Stitch" = NA, # Stitch IDs already are CIDs.
+        "NOT-FOUND")   # Default.
 }
 
 .validSources <- function(df) {
     is_known_source <- df$Source %in% SOURCES_DRUG
     if (! all(is_known_source)) {
         unknown_names <- unique(df$Source[! is_known_source])
-        stop("Unknown drug sources ", paste(unknown_names, collapse = ", "),
-             " at row(s) ", paste(which(! is_known_source), collapse = ", "))
+        stop(
+            "Unknown drug sources ", paste(unknown_names, collapse = ", "),
+            " at row(s) ", paste(which(! is_known_source), collapse = ", "))
     }
 }
 
@@ -164,7 +168,7 @@ req_pubchem_status <- function(reqid) {
 }
 
 req_pubchem_status_no_retry <- function(reqid) {
-   req_pubchem(xml_pubchem_status(reqid))
+    req_pubchem(xml_pubchem_status(reqid))
 }
 
 parse_pubchem_status <- function(resp) {
@@ -239,11 +243,10 @@ lookup_pubchem <- function(df) {
         subset(df_drug$Source != "Stitch") |>
         (function(x) {
             x[["Registry"]] <-
-                sapply(x$Source, SOURCES_REGISTRY, USE.NAMES = FALSE)
-            ## Unlisting NULL values reduces the array length, so temporarily
-            ## replace.
-            x$Registry[elementNROWS(x$Registry) == 0L] <- list("SYNONYM")
-            x$Registry <- unlist(x$Registry)
+                vapply(
+                    x$Source, SOURCES_REGISTRY, "", synonym = "SYNONYM",
+                    USE.NAMES = FALSE)
+            x$Registry <- unlist(x$Registry, recursive = FALSE)
             x
         })() |>
         (function(x) {
@@ -251,10 +254,11 @@ lookup_pubchem <- function(df) {
             ## columns instead of rows!  Therefore manually split
             regs <- unique(x$Registry)
             names(regs) <- regs
-            lapply(regs,
-                   function(reg) {
-                       subset(x, x$Registry == reg, select = -ncol(x))
-                   })
+            lapply(
+                regs,
+                function(reg) {
+                    subset(x, x$Registry == reg, select = -ncol(x))
+                })
         })()
     if (length(dfs_reg) == 0L) {
         return(df_res)
@@ -286,8 +290,9 @@ lookup_pubchem <- function(df) {
     resps <-        
         lapply(
             lists_req,
-            \(x) req_pubchem_query(x$ids, x$registry) |>
-                 req_throttle(capacity = 30)) |>
+            function(x)
+                req_pubchem_query(x$ids, x$registry) |>
+                req_throttle(capacity = 30)) |>
         req_perform_parallel(progress = FALSE)
     ## Retrieve request IDs.
     reqids <- lapply(resps, parse_pubchem_query)
@@ -305,11 +310,13 @@ lookup_pubchem <- function(df) {
         i <- i + 1L
         ## Only requery failed queries.
         resps[retry] <-
-            lapply(reqids[retry],
-                   \(x) req_pubchem_status_no_retry(x)) |>
+            lapply(
+                reqids[retry],
+                \(x) req_pubchem_status_no_retry(x)) |>
             req_perform_parallel(progress = FALSE)
         Sys.sleep(0.5)
-        retry[retry] <- sapply(resps[retry], check_pubchem_status)
+        retry[retry] <-
+            vapply(resps[retry], check_pubchem_status, logical(1))
     }
     ## Retrieve DataFrames.
     dfs_res <- lapply(resps, parse_pubchem_status)
@@ -332,7 +339,6 @@ lookup_pubchem <- function(df) {
 #' Map external Registry IDs to PubChem CIDs using the PubChem Power User
 #' Gateway (PUG) (https://pubchem.ncbi.nlm.nih.gov/docs/power-user-gateway),
 #' also specified by the NCBI identifer exchange service:
-#' https://pubchem.ncbi.nlm.nih.gov/docs/identifier-exchange-service#section=Steps-to-identifier-Exchange
 #' https://pubchem.ncbi.nlm.nih.gov/idexchange/
 #'
 #' @param ids character vector of one or more Registry identifiers.

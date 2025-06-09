@@ -21,6 +21,5 @@ DataFrame with PubChem CIDs or NAs guaranteed to be the length as
 Map external Registry IDs to PubChem CIDs using the PubChem Power User
 Gateway (PUG) (https://pubchem.ncbi.nlm.nih.gov/docs/power-user-gateway),
 also specified by the NCBI identifer exchange service:
-https://pubchem.ncbi.nlm.nih.gov/docs/identifier-exchange-service#section=Steps-to-identifier-Exchange
 https://pubchem.ncbi.nlm.nih.gov/idexchange/
 }

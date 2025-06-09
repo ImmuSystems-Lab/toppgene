@@ -119,6 +119,15 @@ enrich_dr |>
 options(showHeadLines = orig)
 ```
 
+## Convert drug database identifiers to PubChem CIDs
+
+```{r toppgene-pubchem}
+enrich_chd |>
+    lookup_pubchem()
+enrich_dr |>
+    lookup_pubchem()
+```
+
 ## Change default limits of enrichment queries
 
 One can change the various cut-offs of a query using the
