@@ -4,10 +4,12 @@
 \alias{lookup}
 \title{Return integer Entrez IDs from gene symbols, ensembl references, etc.}
 \usage{
-lookup(symbols)
+lookup(symbols, max_tries = 3L)
 }
 \arguments{
 \item{symbols}{Character vector of genes.}
+
+\item{max_tries}{Number of attempts passed on to httr2::req_retry.}
 }
 \value{
 DataFrame with 4 columns: "Submitted" symbol character vector in the

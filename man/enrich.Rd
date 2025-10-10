@@ -4,12 +4,14 @@
 \alias{enrich}
 \title{Return functional enrichment of gene Entrez IDs.}
 \usage{
-enrich(entrez_ids, categories = CategoriesDataFrame())
+enrich(entrez_ids, categories = CategoriesDataFrame(), max_tries = 3L)
 }
 \arguments{
 \item{entrez_ids}{Integer vector of genes.}
 
 \item{categories}{If no categories are provided, return all categories.}
+
+\item{max_tries}{Number of attempts passed on to httr2::req_retry.}
 }
 \value{
 DataFrame with 15 columns containing the enrichment Category, ID,

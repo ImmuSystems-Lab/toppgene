@@ -4,13 +4,15 @@
 \alias{lookup_pubchem_}
 \title{Convert identifiers of a single ToppGene drug database to PubChem CIDs.}
 \usage{
-lookup_pubchem_(ids, registry = NULL)
+lookup_pubchem_(ids, registry = NULL, max_tries = 3L)
 }
 \arguments{
 \item{ids}{character vector of one or more Registry identifiers.}
 
 \item{registry}{optional character vector of length one with Registry name.
 Not specifying this argument falls back to a PubChem synonym lookup.}
+
+\item{max_tries}{Number of attempts passed on to httr2::req_retry.}
 }
 \value{
 DataFrame with PubChem CIDs or NAs guaranteed to be the length as

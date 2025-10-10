@@ -26,6 +26,7 @@ EmptyLookupDFEntrez <- function() {
 #' [AnnotationDbi::mapIds()], etc.
 #'
 #' @param symbols Character vector of genes.
+#' @param max_tries Number of attempts passed on to httr2::req_retry.
 #' @return DataFrame with 4 columns: "Submitted" symbol character vector in the
 #'     same order as the symbols input parameter, corresponding "Entrez"
 #'     integer IDs, "OfficialSymbol" character vector, and "Description" of
@@ -38,7 +39,7 @@ EmptyLookupDFEntrez <- function() {
 #' # - ENSG00000113196 is an ensembl gene symbol for HAND1.
 #' # - ENSMUSG00000020287 is a mouse gene MPG.
 #' lookup(c("FLDB", "APOE", "ENSG00000113196", "ENSMUSG00000020287"))
-lookup <- function(symbols) {
+lookup <- function(symbols, max_tries = 3L) {
     stopifnot(is.character(symbols))
     if (length(symbols) == 1L) {
         ## Ensure the JSON input is always a list.
@@ -49,6 +50,7 @@ lookup <- function(symbols) {
         request() |>
         req_url_path_append("lookup") |>
         req_body_json(list(Symbols = symbols)) |>
+        req_retry(max_tries = max_tries) |>
         req_perform()
     content <-
         response |>
@@ -91,6 +93,7 @@ EmptyEnrichDF <- function() {
 #'
 #' @param entrez_ids Integer vector of genes.
 #' @param categories If no categories are provided, return all categories.
+#' @param max_tries Number of attempts passed on to httr2::req_retry.
 #' @return DataFrame with 15 columns containing the enrichment Category, ID,
 #'     and associated data.
 #' @export
@@ -98,7 +101,8 @@ EmptyEnrichDF <- function() {
 #' # Sample functional enrichment calls of the ToppGene API specification:
 #' enrich(2L)
 #' enrich(as.integer(c(1482, 4205, 2626, 9421, 9464, 6910, 6722)))
-enrich <- function(entrez_ids, categories = CategoriesDataFrame()) {
+enrich <- function(entrez_ids, categories = CategoriesDataFrame(),
+                   max_tries = 3L) {
     stopifnot(is.integer(entrez_ids))
     if (length(entrez_ids) == 1L) {
         ## Ensure the JSON input is always a list.
@@ -131,6 +135,7 @@ enrich <- function(entrez_ids, categories = CategoriesDataFrame()) {
         request() |>
         req_url_path_append("enrich") |>
         req_body_json(req_data) |>
+        req_retry(max_tries = max_tries) |>
         req_perform()
     lists <-
         response |>

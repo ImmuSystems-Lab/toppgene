@@ -17,6 +17,12 @@
    - `ChemmineR` does not support vectorized lookups to PubChem CIDs and times
      out when performing multiple queries.
 
+## Significant user-visible changes
+
+- Added `max_tries` with a default value of 3 to all functions that perform web
+  queries in keeping with Appendix C.2 of the Bioconductor Guidelines for
+  Package Development and Maintenance.
+
 # toppgene 0.98.2 (2025-03-18)
 
 ## Significant user-visible changes
