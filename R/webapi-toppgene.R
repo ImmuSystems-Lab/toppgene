@@ -102,7 +102,7 @@ EmptyEnrichDF <- function() {
 #' enrich(2L)
 #' enrich(as.integer(c(1482, 4205, 2626, 9421, 9464, 6910, 6722)))
 enrich <- function(entrez_ids, categories = CategoriesDataFrame(),
-                   max_tries = 3L) {
+    max_tries = 3L) {
     stopifnot(is.integer(entrez_ids))
     if (length(entrez_ids) == 1L) {
         ## Ensure the JSON input is always a list.
