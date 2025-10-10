@@ -60,7 +60,7 @@ lookup <- function(symbols, max_tries = 3L) {
         warning("No matching gene symbols found")
         return(EmptyLookupDFEntrez())
     }
-    lists <- list_transpose(content)
+    lists <- list_transpose(content, simplify = FALSE)
     df <- DataFrame(lapply(lists, unlist))
     if (nrow(df) != length(symbols)) {
         warning("Some gene symbols were not found")
@@ -118,7 +118,7 @@ enrich <- function(entrez_ids, categories = CategoriesDataFrame(),
                 Type = rownames(categories),
                 as.data.frame(categories)) |>
             as.list() |>
-            list_transpose() |>
+            list_transpose(simplify = FALSE) |>
             ## Prevent inner-most item conversion to a JSON list using unbox(),
             ## otherwise the web request silently fails and returns NULL.
             (function(x) {
@@ -148,7 +148,7 @@ enrich <- function(entrez_ids, categories = CategoriesDataFrame(),
     }
     lists <- list_transpose(lists)
     ## Extract the nested lists from Genes.
-    lists$Genes <- lapply(lists$Genes, list_transpose)
+    lists$Genes <- lapply(lists$Genes, list_transpose, simplify = FALSE)
     lists$GenesEntrez <- IntegerList(
         lapply(lists$Genes, function(x) x$Entrez))
     lists$GenesSymbol <- CharacterList(

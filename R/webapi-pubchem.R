@@ -290,7 +290,7 @@ lookup_pubchem <- function(df) {
                     names(x) |>
                     lapply(\(x) x))
         })() |>
-        list_transpose()
+        list_transpose(simplify = FALSE)
     ## Queue parallel network queries to minimize time waiting for responses.
     resps <-
         lapply(
@@ -331,7 +331,7 @@ lookup_pubchem <- function(df) {
         (function(x) {
             x[["ID_"]] <-
                 lists_req |>
-                list_transpose() |>
+                list_transpose(simplify = FALSE) |>
                 (function(x) unlist(x$ids))()
             x
         })() |>

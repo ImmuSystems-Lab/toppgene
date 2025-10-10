@@ -23,6 +23,11 @@
   queries in keeping with Appendix C.2 of the Bioconductor Guidelines for
   Package Development and Maintenance.
 
+## Bug fixes and improvements
+
+- Prevent single record queries from generating web query errors caused by
+  single records being simplified from lists into vectors.
+
 # toppgene 0.98.2 (2025-03-18)
 
 ## Significant user-visible changes
