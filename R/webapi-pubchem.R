@@ -350,19 +350,16 @@ lookup_pubchem <- function(df) {
 #' @param ids character vector of one or more Registry identifiers.
 #' @param registry optional character vector of length one with Registry name.
 #'     Not specifying this argument falls back to a PubChem synonym lookup.
-#' @param max_tries Number of attempts passed on to httr2::req_retry.
 #' @return DataFrame with PubChem CIDs or NAs guaranteed to be the length as
 #'     the input when using a registry.  The DataFrame may have more rows than
 #'     the input when using a non-registry synonym lookup.
-lookup_pubchem_ <- function(ids, registry = NULL, max_tries = 3L) {
+lookup_pubchem_ <- function(ids, registry = NULL) {
     resp <-
         req_pubchem_query(ids, registry) |>
-        req_retry(max_tries = max_tries) |>
         req_perform()
     reqid <- parse_pubchem_query(resp)
     resp <-
         req_pubchem_status(reqid) |>
-        req_retry(max_tries = max_tries) |>
         req_perform()
     parse_pubchem_status(resp)
 }
