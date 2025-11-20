@@ -72,6 +72,9 @@ PROPS_ALLOWED <- list(
 #' @param object `CategoriesDataFrame` object used in [validObject()] and
 #'   [show()] function calls.
 #' @param ... Arguments passed on to inherited methods.
+#' @returns `CategoriesDataFrame` with 19 rows (categories: CoExpression, ...,
+#'   ToppCell) and 5 columns (PValue, MinGenes, MaxGenes, MaxResults,
+#'   Correction).
 #' @seealso [DataFrame::DataFrame()]
 #' @keywords classes methods
 #' @aliases CategoriesDataFrame CategoriesDataFrame-class
@@ -134,7 +137,8 @@ CategoriesDataFrame <- function(...) {
             if (! is.null(names(PROPS_ALLOWED[[i]])) &&
                     all(names(PROPS_ALLOWED[[i]]) == c("min", "max"))) {
                 ## Numeric column limited by min and max.
-                if (! all(object[, col] >= PROPS_ALLOWED[[i]]["min"])) {
+                if (! all(object[, col, drop = TRUE] >=
+                            PROPS_ALLOWED[[i]]["min"])) {
                     msg <- c(
                         msg,
                         paste(
@@ -142,7 +146,8 @@ CategoriesDataFrame <- function(...) {
                             "must contain values >=",
                             PROPS_ALLOWED[[i]]["min"]))
                 }
-                if (! all(object[, col] <= PROPS_ALLOWED[[i]]["max"])) {
+                if (! all(object[, col, drop = TRUE] <=
+                            PROPS_ALLOWED[[i]]["max"])) {
                     msg <- c(
                         msg,
                         paste(
@@ -152,7 +157,7 @@ CategoriesDataFrame <- function(...) {
                 }
             } else {
                 ## Non-numeric column limited by set.
-                if (! all(object[, col] %in% PROPS_ALLOWED[[i]])) {
+                if (! all(object[, col, drop = TRUE] %in% PROPS_ALLOWED[[i]])) {
                     msg <- c(
                         msg,
                         paste0(

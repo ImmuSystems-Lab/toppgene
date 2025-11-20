@@ -8,6 +8,7 @@
 \alias{default}
 \alias{default,CategoriesDataFrame-method}
 \alias{[<-,CategoriesDataFrame-method}
+\alias{[[<-,CategoriesDataFrame,ANY,ANY,ANY-method}
 \alias{[[<-,CategoriesDataFrame-method}
 \alias{rownames<-,CategoriesDataFrame-method}
 \alias{subset,CategoriesDataFrame-method}
@@ -23,7 +24,7 @@ default(x)
 
 \S4method{[}{CategoriesDataFrame}(x, i, j, ...) <- value
 
-\S4method{[[}{CategoriesDataFrame}(x, i, j, ...) <- value
+\S4method{[[}{CategoriesDataFrame,ANY,ANY,ANY}(x, i, j, ...) <- value
 
 \S4method{rownames}{CategoriesDataFrame}(x) <- value
 
@@ -43,6 +44,11 @@ default(x)
 \item{j}{The column slice / name (x[i, j]).}
 
 \item{value}{Atomic or vector assigned to `x`.}
+}
+\value{
+`CategoriesDataFrame` with 19 rows (categories: CoExpression, ...,
+  ToppCell) and 5 columns (PValue, MinGenes, MaxGenes, MaxResults,
+  Correction).
 }
 \description{
 Specialized [DataFrame] class with the following additional constraints to

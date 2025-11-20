@@ -1,6 +1,17 @@
 <!-- markdownlint-disable MD024 MD025 -->
 
-# toppgene 0.98.3 (XXXX-XX-XX)
+# toppgene 0.99.0 (2025-11-20)
+
+## Bug fixes and improvements
+
+- Support trunk R 4.6.0.  This required explicitly specifying the `drop`
+  argument of the `[` accessor of `DataFrame::DataFrame` objects otherwise one
+  runs into the cryptic error "unimplemented type 'list' in 'orderVector1'".
+
+- Documented missing return value of `CategoriesDataFrame` as warned by
+  BiocCheck.
+
+# toppgene 0.98.3 (2025-10-11)
 
 ## New features
 

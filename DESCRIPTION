@@ -1,6 +1,6 @@
 Package: toppgene
 Title: Gene List Enrichment Analysis using the ToppGene Suite
-Version: 0.98.3
+Version: 0.99.0
 Authors@R: c(
     person("Pariksheet Nanda",
            email = "pan79@pitt.edu",
@@ -34,7 +34,7 @@ biocViews:
 URL: https://github.com/ImmunoSystems-lab/toppgene
 BugReports: https://github.com/ImmunoSystems-lab/toppgene/issues
 Depends: 
-    R (>= 4.5.0)
+    R (>= 4.6.0)
 Encoding: UTF-8
 License: GPL (>= 3)
 LazyData: false
@@ -53,7 +53,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/testthat/parallel: true
