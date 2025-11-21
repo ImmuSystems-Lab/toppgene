@@ -1,5 +1,14 @@
 <!-- markdownlint-disable MD024 MD025 -->
 
+# toppgene 0.99.1 (XXXX-XX-XX)
+
+## Bug fixes and improvements
+
+- Fix incorrect R version in CI and simplify GitHub Actions.  The previous
+  GitHub Actions were based on conflicting r-lib/actions and the unmaintained
+  seandavi/BiocActions.  Based on Marcel's suggestion on Zulip, instead use the
+  better maintained Bioconductor/BuildABiocWorkshop GitHub Actions.
+
 # toppgene 0.99.0 (2025-11-20)
 
 ## Bug fixes and improvements
