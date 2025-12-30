@@ -4,6 +4,9 @@
 
 ## Bug fixes and improvements
 
+- Fix vignette typo of "DR and" being transposed
+  <https://github.com/Bioconductor/Contributions/issues/3986#issuecomment-3480980762>.
+
 - Fix incorrect R version in CI and simplify GitHub Actions.  The previous
   GitHub Actions were based on conflicting r-lib/actions and the unmaintained
   seandavi/BiocActions.  Based on Marcel's suggestion on Zulip, instead use the

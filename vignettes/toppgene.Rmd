@@ -56,7 +56,7 @@ However, symbol conversion with ToppGene
 is more permissive than Bioconductor,
 therefore use ToppGene's `lookup()` function
 to convert gene symbols to Entrez IDs.
-The published example provides gene symbols for CHD (n = 28) DR and (n = 27)
+The published example provides gene symbols for CHD (n = 28) and DR (n = 27)
 that we will also use here.
 
 ```{r setup}
