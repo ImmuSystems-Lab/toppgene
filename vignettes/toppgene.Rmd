@@ -46,6 +46,17 @@ To demonstrate the use of ToppGene,
 below are the two test cases from the publication [@chen_improved_2007]
 of congenital heart disease (CHD) and diabetic retinopathy (DR).
 
+# Installation
+
+ To install this package, start R and enter:
+
+```{r install-from-bioc, eval = FALSE}
+if (! require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("toppgene")
+```
+
 # Usage
 
 ## Prepare the gene lists

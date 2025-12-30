@@ -1,6 +1,15 @@
 The toppgene R/Bioconductor package provides a client interface to the ToppGene
 API for gene list enrichment analysis <https://toppgene.cchmc.org/API>.
 
+# Installation from Bioconductor
+
+```R
+if (! require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("toppgene")
+```
+
 # Installation for development
 
 ```R

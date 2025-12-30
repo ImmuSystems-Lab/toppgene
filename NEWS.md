@@ -2,6 +2,11 @@
 
 # toppgene 0.99.1 (XXXX-XX-XX)
 
+## Significant user-visible changes
+
+- Documented Bioconductor release installation instructions to the vignette and
+  README.md file.
+
 ## Bug fixes and improvements
 
 - Fix vignette typo of "DR and" being transposed
