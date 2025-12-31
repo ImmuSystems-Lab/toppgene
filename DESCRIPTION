@@ -39,6 +39,7 @@ Encoding: UTF-8
 License: GPL (>= 3)
 LazyData: false
 Imports:
+    BiocFileCache,
     httr2,
     IRanges,
     jsonlite,
@@ -46,7 +47,8 @@ Imports:
     purrr,
     readr,
     S4Vectors,
-    xml2
+    xml2,
+    yaml
 Suggests:
     BiocStyle,
     DFplyr,

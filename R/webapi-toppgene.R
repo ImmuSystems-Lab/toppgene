@@ -1,13 +1,75 @@
+#' @importFrom BiocFileCache bfcadd bfcquery bfcremove bfcrid bfcrpath
+#'     BiocFileCache
 #' @importFrom httr2 req_body_json req_perform req_url_path_append
-#'     request resp_body_json
+#'     request resp_body_json resp_body_raw
 #' @importFrom IRanges CharacterList IntegerList
 #' @importFrom jsonlite unbox
 #' @importFrom purrr list_transpose
 #' @importFrom S4Vectors DataFrame
+#' @importFrom yaml read_yaml
 NULL
 
 url_toppgene <- function() {
     getOption("TOPPGENE_API_URL", "https://toppgene.cchmc.org/API")
+}
+
+## The cache is only used to check the API verison once a week; do not cache
+## other requests to ToppGene because ToppGene's databases are regularly
+## updated and caching those would yield inconsistent results.
+cache_toppgene <- function() {
+    getOption("TOPPGENE_CACHE", tools::R_user_dir("toppgene", which = "cache"))
+}
+
+cache_expiration_toppgene <- function() {
+    getOption("TOPPGENE_CACHE_API_EXPIRATION_DAYS", 7L)
+}
+
+file_openapi_yaml <- function(bfc = NULL) {
+    if (is.null(bfc)) {
+        bfc <- BiocFileCache(cache_toppgene(), ask = FALSE)
+    }
+    ## Download if necessary.
+    url <- file.path(url_toppgene(), "openapi.yaml")
+    for (iter in c("create", "update")) {
+        df <- bfcquery(bfc, basename(url), field = "rname", exact = TRUE)
+        if (! nrow(df)) {
+            file_yaml <- bfcadd(
+                bfc,
+                rname = basename(url),
+                fpath = url,
+                rtype = "web",
+                progress = FALSE,
+                fname = "exact")
+            df <- bfcquery(bfc, basename(url), field = "rname", exact = TRUE)
+            break
+        }
+        ## BiocFileCache currently lacks forcing the expiration time of a
+        ## remote resource (Bioconductor/BiocFileCache#36), therefore manually
+        ## add and remove database resources.
+        stopifnot(nrow(df) == 1L)
+        if (difftime(as.POSIXlt(df$create_time), Sys.time(), units = "days") >=
+                cache_expiration_toppgene()) {
+            bfcremove(bfc, rids = bfcrid(df))
+        }
+    }
+    file_yaml <- bfcrpath(bfc, rids = bfcrid(df))
+    file_yaml
+}
+
+api_version_toppgene <- function(bfc = NULL) {
+    yaml <- read_yaml(file_openapi_yaml(bfc))
+    version <- yaml[["info"]][["version"]]
+    version
+}
+
+.checkAPIVersionToppGene <- function(bfc = NULL) {
+    version_expected <- "1.0.0"
+    version_actual <- api_version_toppgene(bfc)
+    if (version_actual != version_expected) {
+        warning(
+            "ToppGene API has changed! Found ", version_actual,
+            ", expected ", version_expected)
+    }
 }
 
 EmptyLookupDFEntrez <- function() {
@@ -41,6 +103,7 @@ EmptyLookupDFEntrez <- function() {
 #' lookup(c("FLDB", "APOE", "ENSG00000113196", "ENSMUSG00000020287"))
 lookup <- function(symbols, max_tries = 3L) {
     stopifnot(is.character(symbols))
+    .checkAPIVersionToppGene()
     if (length(symbols) == 1L) {
         ## Ensure the JSON input is always a list.
         symbols <- list(symbols)
@@ -104,6 +167,7 @@ EmptyEnrichDF <- function() {
 enrich <- function(entrez_ids, categories = CategoriesDataFrame(),
     max_tries = 3L) {
     stopifnot(is.integer(entrez_ids))
+    .checkAPIVersionToppGene()
     if (length(entrez_ids) == 1L) {
         ## Ensure the JSON input is always a list.
         entrez_ids <- list(entrez_ids)

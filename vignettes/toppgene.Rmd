@@ -48,7 +48,7 @@ of congenital heart disease (CHD) and diabetic retinopathy (DR).
 
 # Installation
 
- To install this package, start R and enter:
+To install this package, start R and enter:
 
 ```{r install-from-bioc, eval = FALSE}
 if (! require("BiocManager", quietly = TRUE))

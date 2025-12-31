@@ -1,8 +1,10 @@
 <!-- markdownlint-disable MD024 MD025 -->
 
-# toppgene 0.99.1 (XXXX-XX-XX)
+# toppgene 0.99.1 (2025-12-31)
 
 ## Significant user-visible changes
+
+- Check upstream API version once a week and warn about changes.
 
 - Documented Bioconductor release installation instructions to the vignette and
   README.md file.
