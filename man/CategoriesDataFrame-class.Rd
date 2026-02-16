@@ -7,7 +7,6 @@
 \alias{show,CategoriesDataFrame-method}
 \alias{default}
 \alias{default,CategoriesDataFrame-method}
-\alias{[<-,CategoriesDataFrame,ANY,ANY,ANY-method}
 \alias{[<-,CategoriesDataFrame-method}
 \alias{[[<-,CategoriesDataFrame,ANY,ANY,ANY-method}
 \alias{[[<-,CategoriesDataFrame-method}
@@ -23,7 +22,7 @@ default(x)
 
 \S4method{default}{CategoriesDataFrame}(x)
 
-\S4method{[}{CategoriesDataFrame,ANY,ANY,ANY}(x, i, j, ...) <- value
+\S4method{[}{CategoriesDataFrame}(x, i, j, ...) <- value
 
 \S4method{[[}{CategoriesDataFrame,ANY,ANY,ANY}(x, i, j, ...) <- value
 

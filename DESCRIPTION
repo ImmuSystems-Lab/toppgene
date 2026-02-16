@@ -34,7 +34,7 @@ biocViews:
 URL: https://github.com/ImmunoSystems-lab/toppgene
 BugReports: https://github.com/ImmunoSystems-lab/toppgene/issues
 Depends: 
-    R (>= 4.5.0)
+    R (>= 4.6.0)
 Encoding: UTF-8
 License: GPL (>= 3)
 LazyData: false
@@ -51,7 +51,7 @@ Imports:
     yaml
 Suggests:
     BiocStyle,
-    DFplyr,
+    DFplyr (>= 1.5.0),
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)

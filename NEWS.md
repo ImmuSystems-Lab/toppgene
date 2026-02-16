@@ -1,5 +1,12 @@
 <!-- markdownlint-disable MD024 MD025 -->
 
+# toppgene 0.99.2 (2026-02-16)
+
+## Bug fixes and improvements
+
+- Require a minimum version of DFplyr containing two required bugfixes for
+  building the vignette.
+
 # toppgene 0.99.1 (2025-12-31)
 
 ## Significant user-visible changes
