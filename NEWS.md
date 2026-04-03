@@ -7,6 +7,9 @@
 - Require a minimum version of DFplyr containing two required bugfixes for
   building the vignette.
 
+- This release was accepted to Bioconductor on 2026-02-25
+  <https://github.com/Bioconductor/Contributions/issues/3986#issuecomment-3960925596>
+
 # toppgene 0.99.1 (2025-12-31)
 
 ## Significant user-visible changes
