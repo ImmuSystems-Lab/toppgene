@@ -72,6 +72,8 @@ jobs:
           )
           cov
           covr::zero_coverage(cov)
+        env:
+          TESTTHAT_PARALLEL: false
 
       - name: Check CRAN
         shell: Rscript {0}
