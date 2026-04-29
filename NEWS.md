@@ -1,5 +1,32 @@
 <!-- markdownlint-disable MD024 MD025 -->
 
+# toppgene 1.1.1 (2026-04-29)
+
+## Significant user-visible changes
+
+- Fix GitHub organization typo in URLs of the `DESCRIPTION` file.
+
+## Bug fixes and improvements
+
+- Putatively fix the test coverage GitHub Action CI sometimes hanging on
+  covr::package_coverage() by disabling parallel unit tests.  The rationale for
+  this change was finding similar reports on covr GitHub issues and the Posit
+  community forum.  The covr package itself uses codecov for it's GitHub
+  Actions and, therefore, does not serve as useful reference CI code.  Unable
+  to reproduce this fault with a local rootless container.
+
+# toppgene 1.1.0 (2026-04-28)
+
+## Significant user-visible changes
+
+- Increment development version following release of Bioconductor 3.23.
+
+# toppgene 1.0.0 (2026-04-28)
+
+## Significant user-visible changes
+
+- Stable release for Bioconductor 3.23.
+
 # toppgene 0.99.2 (2026-02-16)
 
 ## Bug fixes and improvements
