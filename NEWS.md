@@ -2,24 +2,35 @@
 
 # toppgene 1.1.1 (2026-04-29)
 
-## Significant user-visible changes
+## Bug fixes and improvements
 
 - Fix GitHub organization typo in URLs of the `DESCRIPTION` file.
 
-## Bug fixes and improvements
+- GitHub Actions CI fixes:
 
-- Putatively fix the test coverage GitHub Action CI sometimes hanging on
-  covr::package_coverage() by disabling parallel unit tests.  The rationale for
-  this change was finding similar reports on covr GitHub issues and the Posit
-  community forum.  The covr package itself uses codecov for it's GitHub
-  Actions and, therefore, does not serve as useful reference CI code.  Unable
-  to reproduce this fault with a local rootless container.
+   - Add back the "remotes" package that was dropped from the
+     `bioconductor/bioconductor_docker:devel` container dependencies.
+
+   - Putatively fix the test coverage sometimes hanging on
+     `covr::package_coverage()` by disabling parallel unit tests.  The
+     rationale for this change was finding similar reports on covr GitHub
+     issues and the Posit community forum.  The covr package itself uses
+     codecov for it's GitHub Actions and, therefore, does not serve as useful
+     reference CI code.  Unable to reproduce this fault with a local rootless
+     container.
 
 # toppgene 1.1.0 (2026-04-28)
 
 ## Significant user-visible changes
 
 - Increment development version following release of Bioconductor 3.23.
+
+# toppgene 1.0.1 (2026-04-30)
+
+## Bug fixes and improvements
+
+- Backport fix from 1.1.1 of GitHub organization typo in URLs of the
+  `DESCRIPTION` file.
 
 # toppgene 1.0.0 (2026-04-28)
 
